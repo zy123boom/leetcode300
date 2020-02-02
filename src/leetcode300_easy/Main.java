@@ -126,6 +126,32 @@ public class Main {
     }
 
     /**
+     * LeetCode.21 合并两个有序链表
+     *
+     * @param l1
+     * @param l2
+     * @return
+     */
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if (l1 == null) {
+            return l2;
+        }
+        if (l2 == null) {
+            return l1;
+        }
+        ListNode head = null;
+        if (l1.val < l2.val) {
+            head = l1;
+            head.next = mergeTwoLists(l1.next, l2);
+        } else {
+            head = l2;
+            head.next = mergeTwoLists(l1, l2.next);
+        }
+
+        return head;
+    }
+
+    /**
      * leetCode.38  外观数列
      * 「外观数列」是一个整数序列，从数字 1 开始，序列中的每一项都是对前一项的描述。前五项如下：
      * <p>
@@ -355,10 +381,10 @@ public class Main {
      * <p>
      * 一个可能的答案是：[0,-3,9,-10,null,5]，它可以表示下面这个高度平衡二叉搜索树：
      * <p>
-     *     0
-     *   /  \
+     * 0
+     * /  \
      * -3    9
-     *  /   /
+     * /   /
      * -10  5
      *
      * @param nums
@@ -393,6 +419,15 @@ class TreeNode {
     TreeNode right;
 
     public TreeNode(int val) {
+        this.val = val;
+    }
+}
+
+class ListNode {
+    int val;
+    ListNode next;
+
+    public ListNode(int val) {
         this.val = val;
     }
 }
