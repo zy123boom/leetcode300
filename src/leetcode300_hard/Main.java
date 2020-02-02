@@ -4,7 +4,7 @@ package leetcode300_hard;
  * @author boomzy
  * @date 2020/2/2 20:30
  */
-public class main {
+public class Main {
 
     /**
      * LeetCode.10 正则表达式匹配
