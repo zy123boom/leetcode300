@@ -10,10 +10,6 @@ import java.util.*;
  */
 public class Main {
 
-    public static void main(String[] args) {
-
-    }
-
     /**
      * LeetCode.1 两数之和
      *
