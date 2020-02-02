@@ -9,6 +9,11 @@ import java.util.*;
  * @date 2020/2/1 10:45
  */
 public class Main {
+
+    public static void main(String[] args) {
+
+    }
+
     /**
      * LeetCode.1 两数之和
      *
