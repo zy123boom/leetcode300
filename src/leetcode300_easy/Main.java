@@ -500,6 +500,48 @@ public class Main {
     }
 
     /**
+     * LeetCode.110 二叉平衡树
+     * 给定一个二叉树，判断它是否是高度平衡的二叉树。
+     * <p>
+     * 本题中，一棵高度平衡二叉树定义为：
+     * 一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过1。
+     *
+     * @param root
+     * @return
+     */
+    public boolean isBalanced(TreeNode root) {
+        /*
+            做两个判断：第一，按照题目的二叉树定义。第二，保证每个节点的左右子树高度差绝对值
+            都不可以大于1。
+         */
+        if (root == null) {
+            return true;
+        }
+        int leftHeight = getHeight(root.left);
+        int rightHeight = getHeight(root.right);
+        // 判断平衡二叉树定义
+        if (Math.abs(leftHeight - rightHeight) > 1) {
+            return false;
+        }
+        // 判断每个节点
+        return isBalanced(root.left) && isBalanced(root.right);
+    }
+
+    /**
+     * 110题帮助函数，得到平衡二叉树高度
+     * @param root
+     * @return
+     */
+    private int getHeight(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int leftHeight = getHeight(root.left);
+        int rightHeight = getHeight(root.right);
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    /**
      * LeetCode.112 路径总和
      * <p>
      * 给定一个二叉树和一个目标和，判断该树中是否存在根节点到叶子节点的路径，这条路径上所有节点值相加等于目标和
