@@ -311,6 +311,46 @@ public class Main {
     }
 
     /**
+     * LeetCode.70 爬楼梯
+     *
+     * @param n
+     * @return
+     */
+    public int climbStairs(int n) {
+        /*
+            方法：
+            由题意，第i阶可以得到的方式有：①在第i-1阶后向上爬一阶 ②在第i-2阶后向上爬两阶
+            所以，能达到的就是两个情况的和。
+            dp[i]:能到达i阶的总数，则有dp[i] = dp[i - 1] + dp[i - 2]。最终结果为dp[n]。
+            动态规划的思想进行转化得到斐波那契Fib(n) = Fib(n - 1) + Fib(n - 2)。此题也
+            可以使用动态规划的方法。
+         */
+
+        // 以下为dp的方法
+        /*if (n == 1) {
+            return 1;
+        }
+        int[] dp = new int[n + 1];
+        dp[1] = 1;
+        dp[2] = 2;
+        for (int i = 3; i <= n; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        return dp[n];*/
+
+        if (n == 1) {
+            return n;
+        }
+        int pre2 = 1, pre1 = 2;
+        for (int i = 3; i <= n; i++) {
+            int cur = pre1 + pre2;
+            pre2 = pre1;
+            pre1 = cur;
+        }
+        return pre1;
+    }
+
+    /**
      * LeetCode.107 二叉树层次遍历II
      * <p>
      * 给定一个二叉树，返回其节点值自底向上的层次遍历。 （即按从叶子节点所在层到根节点所在的层，逐层从左向右遍历）
@@ -410,6 +450,26 @@ public class Main {
         node.left = help(nums, start, mid - 1);
         node.right = help(nums, mid + 1, end);
         return node;
+    }
+
+    /**
+     * LeetCode.112 路径总和
+     * <p>
+     * 给定一个二叉树和一个目标和，判断该树中是否存在根节点到叶子节点的路径，这条路径上所有节点值相加等于目标和
+     *
+     * @param root
+     * @param sum
+     * @return
+     */
+    public boolean hasPathSum(TreeNode root, int sum) {
+        if (root == null) {
+            return false;
+        }
+        sum -= root.val;
+        if ((root.left == null) && (root.right == null)) {
+            return sum == 0;
+        }
+        return hasPathSum(root.left, sum) || hasPathSum(root.right, sum);
     }
 }
 
