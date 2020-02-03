@@ -10,6 +10,57 @@ import java.util.Map;
  * @date 2020/2/1 10:48
  */
 public class Main {
+
+    /**
+     * LeetCode.5 最长回文子串
+     *
+     * @param s
+     * @return
+     */
+    public String longestPalindrome(String s) {
+        /*
+            从中间开始，向两边看，如果两边一样继续扩散。如果一端到头，得出结果。
+            奇数时看字符串，偶数时看两个字符的中间
+         */
+        if (s.length() == 0) {
+            return s;
+        }
+        // 最大回文子串长度
+        int max = 0;
+        // 左边界右边界
+        int ll = 0, rr = 0;
+        for (int i = 0; i < s.length(); i++) {
+            // 字符串为奇数长度的情况
+            int l = i - 1;
+            int r = i + 1;
+            while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) {
+                // 子串长度
+                int len = r - l + 1;
+                if (len > max) {
+                    max = len;
+                    ll = l;
+                    rr = r;
+                }
+                r--;
+                l++;
+            }
+            // 字符串为偶数长度的情况
+            l = i;
+            r = i + 1;
+            while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) {
+                int len = r - l + 1;
+                if (len > max) {
+                    max = len;
+                    ll = l;
+                    rr = r;
+                }
+                r--;
+                l++;
+            }
+        }
+        return s.substring(ll, rr + 1);
+    }
+
     /**
      * leetcode.29 两数相除
      * 给定两个整数，被除数 dividend 和除数 divisor。将两数相除，要求不使用乘法、除法和 mod 运算符。

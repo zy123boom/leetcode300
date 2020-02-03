@@ -277,6 +277,53 @@ public class Main {
     }
 
     /**
+     * LeetCode.67 二进制求和
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public String addBinary(String a, String b) {
+        // 都从最后一位开始，最后一位是低位
+        int n1 = a.length() - 1;
+        int n2 = b.length() - 1;
+        StringBuilder sb = new StringBuilder();
+        // 进位
+        int carry = 0;
+        while (n1 >= 0 && n2 >= 0) {
+            // 某个字符串的数：str.charAt(ch) - '0'
+            int sum = a.charAt(n1) - '0' + b.charAt(n2) - '0' + carry;
+            carry = sum / 2;
+            sum %= 2;
+            sb.append(sum);
+            n1--;
+            n2--;
+        }
+        // 处理一个字符串已经走完另一个没走完的情况
+        while (n1 >= 0) {
+            int sum = a.charAt(n1) - '0' + carry;
+            carry = sum / 2;
+            sum %= 2;
+            sb.append(sum);
+            n1--;
+        }
+        while (n2 >= 0) {
+            int sum = b.charAt(n2) - '0' + carry;
+            carry = sum / 2;
+            sum %= 2;
+            sb.append(sum);
+            n2--;
+        }
+        if (carry > 0) {
+            // 有进位，进位加上
+            sb.append(carry);
+        }
+
+        // 结果需要逆序
+        return sb.reverse().toString();
+    }
+
+    /**
      * LeetCode.69 x的平方根
      *
      * @param x
