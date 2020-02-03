@@ -529,6 +529,7 @@ public class Main {
 
     /**
      * 110题帮助函数，得到平衡二叉树高度
+     *
      * @param root
      * @return
      */
@@ -539,6 +540,30 @@ public class Main {
         int leftHeight = getHeight(root.left);
         int rightHeight = getHeight(root.right);
         return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    /**
+     * LeetCode.111 二叉树的最小深度
+     * <p>
+     * 给定一个二叉树，找出其最小深度。
+     * 最小深度是从根节点到最近叶子节点的最短路径上的节点数量。
+     * <p>
+     * 说明: 叶子节点是指没有子节点的节点。
+     *
+     * @param root
+     * @return
+     */
+    public int minDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        if (root.left == null) {
+            return minDepth(root.right) + 1;
+        }
+        if (root.right == null) {
+            return minDepth(root.left) + 1;
+        }
+        return Math.min(minDepth(root.left), minDepth(root.right)) + 1;
     }
 
     /**
