@@ -8,7 +8,7 @@
 * [困难题](src/leetcode300_hard/Main.java)
 
 #### 多线程题目
-* [简单题](src/leetcode300_mutithread/Main.java)
+* [多线程](src/leetcode300_mutithread/Main.java)
 
 #### 题目持续更新中
 
