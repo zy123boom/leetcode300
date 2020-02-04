@@ -731,6 +731,85 @@ public class Main {
         }
         return !(fast == null || fast.next == null);
     }
+
+    /**
+     * LeetCode.168 Excel表列名称
+     * <p>
+     * 给定一个正整数，返回它在 Excel 表中相对应的列名称。
+     * <p>
+     * 例如，
+     * <p>
+     * 1 -> A
+     * 2 -> B
+     * 3 -> C
+     * ...
+     * 26 -> Z
+     * 27 -> AA
+     * 28 -> AB
+     * ...
+     * <p>
+     * 示例 1:
+     * 输入: 1
+     * 输出: "A"
+     * <p>
+     * 示例 2:
+     * 输入: 28
+     * 输出: "AB"
+     * <p>
+     * 示例 3:
+     * 输入: 701
+     * 输出: "ZY"
+     *
+     * @param n
+     * @return
+     */
+    public String convertToTitle(int n) {
+        /*
+            本质考察10进制转26进制
+         */
+        StringBuilder sb = new StringBuilder();
+        while (n > 0) {
+            int c = n % 26;
+            if (c == 0) {
+                c = 26;
+                n -= 1;
+            }
+            sb.insert(0, (char) ('A' + c - 1));
+            n /= 26;
+        }
+        return sb.toString();
+    }
+
+    /**
+     * LeetCode.171 Excel表列序号
+     *
+     * @param s
+     * @return
+     */
+    public int titleToNumber(String s) {
+        char[] c = s.toCharArray();
+        int res = 0;
+        for (int i = 0; i < c.length; i++) {
+            res = res * 26 + (c[i] - 'A' + 1);
+        }
+        return res;
+    }
+
+    /**
+     * LeetCode.172 阶乘后的0
+     * 给定一个整数 n，返回 n! 结果尾数中零的数量
+     *
+     * @param n
+     * @return
+     */
+    public int trailingZeroes(int n) {
+        int count = 0;
+        while (n > 0) {
+            count += n / 5;
+            n /= 5;
+        }
+        return count;
+    }
 }
 
 class TreeNode {
