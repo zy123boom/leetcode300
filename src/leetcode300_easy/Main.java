@@ -810,6 +810,60 @@ public class Main {
         }
         return count;
     }
+
+    /**
+     * LeetCode.189 旋转数组
+     * 给定一个数组，将数组中的元素向右移动 k 个位置，其中 k 是非负数。
+     * <p>
+     * 示例 1:
+     * 输入: [1,2,3,4,5,6,7] 和 k = 3
+     * 输出: [5,6,7,1,2,3,4]
+     * 解释:
+     * 向右旋转 1 步: [7,1,2,3,4,5,6]
+     * 向右旋转 2 步: [6,7,1,2,3,4,5]
+     * 向右旋转 3 步: [5,6,7,1,2,3,4]
+     *
+     * @param nums
+     * @param k
+     */
+    public void rotate(int[] nums, int k) {
+        /*
+            翻转三次，第一次翻所有的，第二次翻前k个，第三次翻剩下的
+         */
+        k %= nums.length;
+        reverse(nums, 0, nums.length - 1);
+        reverse(nums, 0, k - 1);
+        reverse(nums, k, nums.length - 1);
+    }
+
+    private void reverse(int[] nums, int start, int end) {
+        while (start < end) {
+            int tmp = nums[start];
+            nums[start] = nums[end];
+            nums[end] = tmp;
+            start++;
+            end--;
+        }
+    }
+
+    /**
+     * LeetCode.198 打家劫舍
+     *
+     * @param nums
+     * @return
+     */
+    public int rob(int[] nums) {
+        if (nums.length < 2) {
+            return nums.length == 0 ? 0 : nums[0];
+        }
+        int[] dp = new int[nums.length];
+        dp[0] = nums[0];
+        dp[1] = nums[0] > nums[1] ? nums[0] : nums[1];
+        for (int i = 2; i < nums.length; i++) {
+            dp[i] = Math.max(dp[i - 2] + nums[i], dp[i - 1]);
+        }
+        return dp[nums.length - 1];
+    }
 }
 
 class TreeNode {
