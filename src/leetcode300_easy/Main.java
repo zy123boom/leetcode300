@@ -707,6 +707,30 @@ public class Main {
         }
         return maxProfit;
     }
+
+    /**
+     * LeetCode.141 环形链表
+     * 判断链表是否有环
+     *
+     * @param head
+     * @return
+     */
+    public boolean hasCycle(ListNode head) {
+        // 快慢指针
+        ListNode fast = head;
+        ListNode slow = head;
+        if (fast == null) {
+            return false;
+        }
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+            if (fast == slow) {
+                return true;
+            }
+        }
+        return !(fast == null || fast.next == null);
+    }
 }
 
 class TreeNode {
