@@ -864,6 +864,87 @@ public class Main {
         }
         return dp[nums.length - 1];
     }
+
+    /**
+     * LeetCode.202 快乐数
+     * <p>
+     * 编写一个算法来判断一个数是不是“快乐数”。
+     * <p>
+     * 一个“快乐数”定义为：对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和，
+     * 然后重复这个过程直到这个数变为 1，也可能是无限循环但始终变不到 1。如果可以变为 1，
+     * 那么这个数就是快乐数。
+     * <p>
+     * 示例: 
+     * 输入: 19
+     * 输出: true
+     * 解释:
+     * 12 + 92 = 82
+     * 82 + 22 = 68
+     * 62 + 82 = 100
+     * 12 + 02 + 02 = 1
+     *
+     * @param n
+     * @return
+     */
+    public boolean isHappy(int n) {
+        /*
+            如果该过程中得到了1，就是true。反之就是false，产生false的情况就是产生了
+            循环，也就是每次出现的数字出现过，用HashSet查重即可。
+         */
+        HashSet<Integer> set = new HashSet<>();
+        set.add(n);
+        while (true) {
+            int next = getNext(n);
+            if (next == 1) {
+                return true;
+            }
+            if (set.contains(next)) {
+                return false;
+            } else {
+                set.add(next);
+                n = next;
+            }
+        }
+    }
+
+    // 计算各个位的平方和
+    private int getNext(int n) {
+        int sum = 0;
+        while (n > 0) {
+            int tmp = n % 10;
+            sum += tmp * tmp;
+            n /= 10;
+        }
+        return sum;
+    }
+
+    /**
+     * LeetCode.204 计数质数
+     * 统计所有小于非负整数 n 的质数的数量。
+     *
+     * @param n
+     * @return
+     */
+    public int countPrimes(int n) {
+        /*
+            用一个数组表示当前数是否是素数。
+            然后从 2 开始，将 2 的倍数，4、6、8、10 ..依次标记为非素数。
+            然后将下来每个质数的倍数标记为非素数
+            boolean数组默认值为false，false表示当前是质数（素数）
+         */
+        boolean[] notPrime = new boolean[n];
+        int count = 0;
+        // 判断2~n-1
+        for (int i = 2; i < n; i++) {
+            if (!notPrime[i]) {
+                count++;
+                for (int j = 2; j * i < n; j++) {
+                    notPrime[j * i] = true;
+                }
+            }
+        }
+        return count;
+    }
 }
 
 class TreeNode {
