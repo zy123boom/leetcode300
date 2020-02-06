@@ -945,6 +945,66 @@ public class Main {
         }
         return count;
     }
+
+    /**
+     * LeetCode.206 反转链表
+     *
+     * @param head
+     * @return
+     */
+    public ListNode reverseList(ListNode head) {
+        ListNode pre = null;
+        ListNode curr = head;
+        while (curr != null) {
+            ListNode next = curr.next;
+            curr.next = pre;
+            pre = curr;
+            curr = next;
+        }
+        return pre;
+    }
+
+    /**
+     * LeetCode.219 存在重复元素II
+     * 给定一个整数数组和一个整数 k，判断数组中是否存在两个不同的索引 i 和 j，
+     * 使得 nums [i] = nums [j]，并且 i 和 j 的差的绝对值最大为 k。
+     * <p>
+     * 示例 1:
+     * 输入: nums = [1,2,3,1], k = 3
+     * 输出: true
+     * <p>
+     * 示例 2:
+     * 输入: nums = [1,0,1,1], k = 1
+     * 输出: true
+     * <p>
+     * 示例 3:
+     * 输入: nums = [1,2,3,1,2,3], k = 2
+     * 输出: false
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+        /*
+            使用Set，维护长度为k的滑动窗口。
+            遍历数组，对于每个元素做以下操作：
+            1.在散列表中搜索当前元素，如果找到了就返回 true。
+            2.在散列表中插入当前元素。
+            3.如果当前散列表的大小超过了k，删除散列表中最旧的元素。
+         */
+        Set<Integer> set = new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (set.contains(nums[i])) {
+                return true;
+            }
+            set.add(nums[i]);
+            if (set.size() > k) {
+                set.remove(nums[i - k]);
+            }
+        }
+        return false;
+    }
 }
 
 class TreeNode {
