@@ -1005,6 +1005,48 @@ public class Main {
         }
         return false;
     }
+
+    /**
+     * LeetCode.226 翻转二叉树
+     *
+     * @param root
+     * @return
+     */
+    public TreeNode invertTree(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        TreeNode left = invertTree(root.left);
+        TreeNode right = invertTree(root.right);
+        root.left = right;
+        root.right = left;
+        return root;
+    }
+
+    /**
+     * LeetCode.231 2的幂
+     * 给定一个整数，编写一个函数来判断它是否是 2 的幂次方。
+     *
+     * @param n
+     * @return
+     */
+    public boolean isPowerOfTwo(int n) {
+        /*
+            不断对2取余看余数是否为1
+         */
+        if (n <= 0) {
+            return false;
+        }
+        int r;
+        while (n != 1) {
+            r = n % 2;
+            if (r == 1) {
+                return false;
+            }
+            n /= 2;
+        }
+        return true;
+    }
 }
 
 class TreeNode {
