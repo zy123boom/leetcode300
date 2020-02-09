@@ -1047,6 +1047,58 @@ public class Main {
         }
         return true;
     }
+
+    /**
+     * LeetCode.205 同构字符串
+     * 给定两个字符串 s 和 t，判断它们是否是同构的。
+     * <p>
+     * 如果 s 中的字符可以被替换得到 t ，那么这两个字符串是同构的。
+     * <p>
+     * 所有出现的字符都必须用另一个字符替换，同时保留字符的顺序。两个字符不能映射
+     * 到同一个字符上，但字符可以映射自己本身。
+     * <p>
+     * <p>
+     * 示例 1:
+     * 输入: s = "egg", t = "add"
+     * 输出: true
+     * <p>
+     * 示例 2:
+     * 输入: s = "foo", t = "bar"
+     * 输出: false
+     * <p>
+     * 示例 3:
+     * 输入: s = "paper", t = "title"
+     * 输出: true
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isIsomorphic(String s, String t) {
+        /*
+            方法：用一个map来作为映射表，处理s到t的映射。遍历s跟t的当前字母，
+            如果map[c1]不存在，就做映射，map[c1]=c2。如果存在，判断一下键对应
+            的值是不是c2，不是就false。
+            因为要做到s->t,且t->s，所以要做两遍
+         */
+        return helper(s, t) && helper(t, s);
+    }
+
+    private boolean helper(String s, String t) {
+        HashMap<Character, Character> map = new HashMap<>();
+        for (int i = 0; i < s.length(); i++) {
+            char c1 = s.charAt(i);
+            char c2 = t.charAt(i);
+            if (map.containsKey(c1)) {
+                if (map.get(c1) != c2) {
+                    return false;
+                }
+            } else {
+                map.put(c1, c2);
+            }
+        }
+        return true;
+    }
 }
 
 class TreeNode {
