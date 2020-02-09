@@ -1099,6 +1099,31 @@ public class Main {
         }
         return true;
     }
+
+    /**
+     * LeetCode.234 回文链表
+     * 请判断一个链表是否为回文链表。
+     *
+     * @param head
+     * @return
+     */
+    public boolean isPalindrome(ListNode head) {
+        List<Integer> list = new ArrayList<>();
+        ListNode cur = head;
+        while (cur != null) {
+            list.add(cur.val);
+            cur = cur.next;
+        }
+        int left = 0, right = list.size() - 1;
+        while (left < right) {
+            if (!list.get(left).equals(list.get(right))) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
+    }
 }
 
 class TreeNode {
