@@ -1150,6 +1150,61 @@ public class Main {
         }
         return root;
     }
+
+    /**
+     * LeetCode.242 有效的字母异位词
+     * 给定两个字符串 s 和 t ，编写一个函数来判断 t 是否是 s 的字母异位词。
+     * <p>
+     * 示例 1:
+     * 输入: s = "anagram", t = "nagaram"
+     * 输出: true
+     * <p>
+     * 示例 2:
+     * 输入: s = "rat", t = "car"
+     * 输出: false
+     * 说明:
+     * 你可以假设字符串只包含小写字母。
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isAnagram(String s, String t) {
+        /*
+            第一种方法是将两个字符串转成字符数组然后排序，用equals()比较
+            此处做第二种方法，用26长度的数组表示字母，s中出现过的字母++，t中出现的--。
+            如果t中的字母出现次数<0，则肯定不是异位词，return false.
+         */
+        if (s.length() != t.length()) {
+            return false;
+        }
+        int[] table = new int[26];
+        for (int i = 0; i < s.length(); i++) {
+            table[s.charAt(i) - 'a']++;
+        }
+        for (int i = 0; i < t.length(); i++) {
+            int tmp = --table[t.charAt(i) - 'a'];
+            if (tmp < 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * LeetCode.258 各位相加
+     * 给定一个非负整数 num，反复将各个位上的数字相加，直到结果为一位数。
+     *
+     * @param num
+     * @return
+     */
+    public int addDigits(int num) {
+        while (num >= 10) {
+            int tmp = (num / 10) + (num % 10);
+            num = tmp;
+        }
+        return num;
+    }
 }
 
 class TreeNode {
