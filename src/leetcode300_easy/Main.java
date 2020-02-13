@@ -1236,6 +1236,34 @@ public class Main {
         }
         return true;
     }
+
+    /**
+     * LeetCode.283 移动零
+     *
+     * @param nums
+     */
+    public void moveZeroes(int[] nums) {
+        /*
+            双指针
+         */
+        int left = 0, right = 0;
+        while (left <= right && right <= nums.length - 1) {
+            if (nums[right] == 0) {
+                right++;
+                continue;
+            }
+            swap(nums, left, right);
+            left++;
+            right++;
+        }
+    }
+
+    public void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+    }
+
 }
 
 class TreeNode {
