@@ -1,7 +1,9 @@
 package leetcode300_normal;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * leetcode前300道，中等题
@@ -10,6 +12,99 @@ import java.util.Map;
  * @date 2020/2/1 10:48
  */
 public class Main {
+
+    /**
+     * LeetCode.2 两数相加
+     * 给出两个 非空 的链表用来表示两个非负的整数。其中，它们各自的位数是按照 逆序 的方式存储的，
+     * 并且它们的每个节点只能存储 一位 数字。
+     * <p>
+     * 如果，我们将这两个数相加起来，则会返回一个新的链表来表示它们的和。
+     * <p>
+     * 您可以假设除了数字 0 之外，这两个数都不会以 0 开头。
+     * <p>
+     * 示例：
+     * 输入：(2 -> 4 -> 3) + (5 -> 6 -> 4)
+     * 输出：7 -> 0 -> 8
+     * 原因：342 + 465 = 807
+     *
+     * @param l1
+     * @param l2
+     * @return
+     */
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        /*
+            设置一个dummy，让cur指向dummy，然后链表非空进行计算。
+            和sum = l1.val + l2.val + 进位carry。
+            当前节点值val = sum % 10，进位carry = sum / 10。
+            做完一次后curr节点的指针指向下一个节点。最后的结果是dummy节点
+            指向的链表即dummy.next
+         */
+        ListNode dummy = new ListNode(0);
+        int sum = 0;
+        ListNode cur = dummy;
+        ListNode p1 = l1, p2 = l2;
+        while (p1 != null || p2 != null) {
+            if (p1 != null) {
+                sum += p1.val;
+                p1 = p1.next;
+            }
+            if (p2 != null) {
+                sum += p2.val;
+                p2 = p2.next;
+            }
+            cur.next = new ListNode(sum % 10);
+            sum /= 10;
+            cur = cur.next;
+        }
+        if (sum == 1) {
+            cur.next = new ListNode(1);
+        }
+        return dummy.next;
+    }
+
+    /**
+     * LeetCode.3 无重复字符的最长子串
+     * 给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
+     * <p>
+     * 示例 1:
+     * 输入: "abcabcbb"
+     * 输出: 3
+     * 解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+     * <p>
+     * 示例 2:
+     * 输入: "bbbbb"
+     * 输出: 1
+     * 解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
+     * <p>
+     * 示例 3:
+     * 输入: "pwwkew"
+     * 输出: 3
+     * 解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
+     *      请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
+     *
+     * @param s
+     * @return
+     */
+    public int lengthOfLongestSubstring(String s) {
+        /*
+            方法: HashSet+双指针。
+            使用双指针，快指针j，慢指针i。让j走，如果集合里不包含
+            当前字符，则加到字符里。如果包含了，则走慢指针i，判断
+            i指针对应的字符是否出现在集合里，出现则移除掉，同时指针
+            右移。最后看set的size。即res = max{res, set.size()}
+         */
+        Set<Character> set = new HashSet<>();
+        int res = 0;
+        for (int i = 0, j = 0; j < s.length(); j++) {
+            while (set.contains(s.charAt(j))) {
+                set.remove(s.charAt(i));
+                i++;
+            }
+            set.add(s.charAt(j));
+            res = Math.max(res, set.size());
+        }
+        return res;
+    }
 
     /**
      * LeetCode.5 最长回文子串
@@ -171,6 +266,25 @@ public class Main {
         protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
             return size() > capacity;
         }
+    }
+}
+
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+
+    public TreeNode(int val) {
+        this.val = val;
+    }
+}
+
+class ListNode {
+    int val;
+    ListNode next;
+
+    public ListNode(int val) {
+        this.val = val;
     }
 }
 
