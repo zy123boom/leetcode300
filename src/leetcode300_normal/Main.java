@@ -1,9 +1,6 @@
 package leetcode300_normal;
 
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * leetcode前300道，中等题
@@ -87,21 +84,42 @@ public class Main {
      */
     public int lengthOfLongestSubstring(String s) {
         /*
-            方法: HashSet+双指针。
+            方法一: HashSet+双指针。
             使用双指针，快指针j，慢指针i。让j走，如果集合里不包含
             当前字符，则加到字符里。如果包含了，则走慢指针i，判断
             i指针对应的字符是否出现在集合里，出现则移除掉，同时指针
             右移。最后看set的size。即res = max{res, set.size()}
-         */
-        Set<Character> set = new HashSet<>();
-        int res = 0;
-        for (int i = 0, j = 0; j < s.length(); j++) {
+            代码如下：
+            Set<Character> set = new HashSet<>();
+            int res = 0;
+            for (int i = 0, j = 0; j < s.length(); j++) {
             while (set.contains(s.charAt(j))) {
                 set.remove(s.charAt(i));
                 i++;
             }
             set.add(s.charAt(j));
             res = Math.max(res, set.size());
+            }
+            return res;
+
+            方法二：HashMap+双指针(优化)。
+            方法一需要让慢指针每次走一格，比较次数过多。
+            使用双指针，快指针j，慢指针i。让j走，如果集合里不包含
+            当前字符，则加到字符里。如果包含了，直接让慢指针走到下
+            标为重复字符的下标加1。但是如果重复在慢指针指的之前出现
+            了，则判断一下有没有必要回去了。即：
+            i被移动到的新位置为max{i, 重复字符出现的位置+1}
+            代码见正文
+         */
+        // map记录上次出现某字符的位置
+        Map<Character, Integer> map = new HashMap<>();
+        int res = 0;
+        for (int i = 0, j = 0; j < s.length(); j++) {
+            if (map.containsKey(s.charAt(j))) {
+                i = Math.max(i, s.charAt(j) + 1);
+            }
+            map.put(s.charAt(j), j);
+            res = Math.max(res, j - i + 1);
         }
         return res;
     }
@@ -136,8 +154,8 @@ public class Main {
                     ll = l;
                     rr = r;
                 }
-                r--;
-                l++;
+                r++;
+                l--;
             }
             // 字符串为偶数长度的情况
             l = i;
@@ -149,11 +167,51 @@ public class Main {
                     ll = l;
                     rr = r;
                 }
-                r--;
-                l++;
+                r++;
+                l--;
             }
         }
         return s.substring(ll, rr + 1);
+    }
+
+    /**
+     * LeetCode.6 Z字形变换
+     *
+     * @param s
+     * @param numRows
+     * @return
+     */
+    public String convert(String s, int numRows) {
+        /*
+            将变换前的字符串存储在若干StringBuilder里，numRows是多少就有多少
+            的StringBuilder。然后每行放到一个StringBuilder里，最后的结果就是
+            每行每行的拼起来。注意，numRows从1开始。
+         */
+        if (numRows <= 1) {
+            return s;
+        }
+        StringBuilder[] sb = new StringBuilder[numRows];
+        for (int i = 0; i < numRows; i++) {
+            sb[i] = new StringBuilder();
+        }
+        // 遍历字符串
+        int index = 0;
+        while (index < s.length()) {
+            // Z字形往下的过程
+            for (int i = 0; i < numRows && index < s.length(); i++) {
+                sb[i].append(s.charAt(index));
+                index++;
+            }
+            // Z字形往斜上的过程，相当于只是中间行
+            for (int i = numRows - 2; i > 0 && index < s.length(); i--) {
+                sb[i].append(s.charAt(index));
+                index++;
+            }
+        }
+        for (int i = 1; i < numRows; i++) {
+            sb[0].append(sb[i]);
+        }
+        return sb[0].toString();
     }
 
     /**
