@@ -4,6 +4,8 @@ import java.util.*;
 
 /**
  * leetcode前300道，中等题
+ * 题目来源：力扣（LeetCode）
+ * 链接：https://leetcode-cn.com/problemset/algorithms/?difficulty=%E4%B8%AD%E7%AD%89
  *
  * @author boomzy
  * @date 2020/2/1 10:48
@@ -212,6 +214,77 @@ public class Main {
             sb[0].append(sb[i]);
         }
         return sb[0].toString();
+    }
+
+    /**
+     * LeetCode.8 字符串转换整数
+     * 请你来实现一个 atoi 函数，使其能将字符串转换成整数。
+     * <p>
+     * 首先，该函数会根据需要丢弃无用的开头空格字符，直到寻找到第一个非空格的字符为止。
+     * 当我们寻找到的第一个非空字符为正或者负号时，则将该符号与之后面尽可能多的连续数
+     * 字组合起来，作为该整数的正负号；假如第一个非空字符是数字，则直接将其与之后连续
+     * 的数字字符组合起来，形成整数。
+     * <p>
+     * 该字符串除了有效的整数部分之后也可能会存在多余的字符，这些字符可以被忽略，它们
+     * 对于函数不应该造成影响。
+     * <p>
+     * 注意：假如该字符串中的第一个非空格字符不是一个有效整数字符、字符串为空或字符串
+     * 仅包含空白字符时，则你的函数不需要进行转换。
+     * <p>
+     * 在任何情况下，若函数不能进行有效的转换时，请返回 0。
+     * <p>
+     * 说明：
+     * 假设我们的环境只能存储 32 位大小的有符号整数，那么其数值范围为 [−231,  231 − 1]。
+     * 如果数值超过这个范围，请返回  INT_MAX (231 − 1) 或 INT_MIN (−231) 。
+     *
+     * @param str
+     * @return
+     */
+    public int myAtoi(String str) {
+        /*
+            方法：
+            1.找到一个不是空白的字符，去空白
+            2.如果第一个字符是正负号，记录下来
+            3.查看每一位，如果是数字就记录下来，直到出现第一个不是数字的字符。
+            注意：
+            1.如果一上来不是'+'/'-'/数字，返回0
+            2.如果数字超过32位，返回Integer最大值或最小值
+         */
+        if (str == null) {
+            return 0;
+        }
+        str = str.trim();
+        if (str.length() == 0) {
+            return 0;
+        }
+        // 符号位
+        int sign = 1;
+        int index = 0;
+        if (str.charAt(index) == '+') {
+            index++;
+        } else if (str.charAt(index) == '-') {
+            sign = -1;
+            index++;
+        }
+
+        long num = 0;
+        for (; index < str.length(); index++) {
+            if (str.charAt(index) < '0' || str.charAt(index) > '9') {
+                break;
+            }
+            num = num * 10 + (str.charAt(index) - '0');
+            if (num > Integer.MAX_VALUE) {
+                break;
+            }
+        }
+
+        if (num * sign > Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
+        } else if (num * sign < Integer.MIN_VALUE) {
+            return Integer.MIN_VALUE;
+        } else {
+            return (int) num * sign;
+        }
     }
 
     /**

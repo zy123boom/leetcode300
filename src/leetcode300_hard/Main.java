@@ -1,6 +1,10 @@
 package leetcode300_hard;
 
 /**
+ * LeetCode前300道，困难题
+ * 题目来源：力扣（LeetCode）
+ * 链接：https://leetcode-cn.com/problemset/algorithms/?difficulty=%E5%9B%B0%E9%9A%BE
+ *
  * @author boomzy
  * @date 2020/2/2 20:30
  */
