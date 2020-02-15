@@ -319,6 +319,74 @@ public class Main {
     }
 
     /**
+     * LeetCode.12 整数转罗马数字
+     *
+     * @param num
+     * @return
+     */
+    public String intToRoman(int num) {
+        /*
+            暴力做法，最容易理解，全部列出来然后拼
+         */
+        String str = "";
+        String[] digit = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+        String[] ten = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+        String[] hund = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+        String[] thou = {"", "M", "MM", "MMM"};
+        return str + thou[num / 1000] + hund[num % 1000 / 100] + ten[num % 100 / 10] + digit[num % 10];
+    }
+
+    /**
+     * LeetCode.15 三数之和
+     * 给定一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，
+     * 使得 a + b + c = 0 ？找出所有满足条件且不重复的三元组。
+     * <p>
+     * 注意：答案中不可以包含重复的三元组。
+     * <p>
+     * 示例：
+     * <p>
+     * 给定数组 nums = [-1, 0, 1, 2, -1, -4]，
+     * <p>
+     * 满足要求的三元组集合为：
+     * [
+     * [-1, 0, 1],
+     * [-1, -1, 2]
+     * ]
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> threeSum(int[] nums) {
+        /*
+            类似两数之和，固定一个数，找出另外两个数之和等于负的固定数
+            先排序，再固定一个数，用双指针找另外两个。用Set去重
+         */
+        Arrays.sort(nums);
+        int n = nums.length;
+        Set<List<Integer>> set = new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            // nums[i]被固定
+            int l = i + 1;
+            int r = n - 1;
+            while (l < r) {
+                if (nums[i] + nums[l] + nums[r] == 0) {
+                    set.add(Arrays.asList(nums[i], nums[l], nums[r]));
+                    l++;
+                    r--;
+                } else if (nums[i] + nums[l] + nums[r] < 0) {
+                    l++;
+                } else {
+                    r--;
+                }
+            }
+        }
+
+        List<List<Integer>> res = new ArrayList<>();
+        res.addAll(set);
+        return res;
+    }
+
+    /**
      * leetcode.29 两数相除
      * 给定两个整数，被除数 dividend 和除数 divisor。将两数相除，要求不使用乘法、除法和 mod 运算符。
      * 返回被除数 dividend 除以除数 divisor 得到的商。
