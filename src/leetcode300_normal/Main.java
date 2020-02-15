@@ -1,5 +1,6 @@
 package leetcode300_normal;
 
+
 import java.util.*;
 
 /**
@@ -285,6 +286,36 @@ public class Main {
         } else {
             return (int) num * sign;
         }
+    }
+
+    /**
+     * LeetCode.11 盛最多水的容器
+     *
+     * @param height
+     * @return
+     */
+    public int maxArea(int[] height) {
+        /*
+            双指针算法，计算出当前面积，然后移动left指针，看left指针的值是不是比
+            right指针的小，如果小，就left++,反之right--。如果相等，两个指针都变。
+         */
+        if (height == null || height.length < 2) {
+            return 0;
+        }
+        int area = 0;
+        int left = 0, right = height.length - 1;
+        while (left < right) {
+            area = Math.max(area, (right - left) * Math.min(height[left], height[right]));
+            if (height[left] < height[right]) {
+                left++;
+            } else if (height[left] > height[right]) {
+                right--;
+            } else {
+                left++;
+                right--;
+            }
+        }
+        return area;
     }
 
     /**
