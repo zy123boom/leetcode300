@@ -387,6 +387,168 @@ public class Main {
     }
 
     /**
+     * LeetCode.16 最接近的三数之和
+     * 给定一个包括 n 个整数的数组 nums 和 一个目标值 target。找出 nums 中的三个整数，
+     * 使得它们的和与 target 最接近。返回这三个数的和。假定每组输入只存在唯一答案。
+     * <p>
+     * 例如，给定数组 nums = [-1，2，1，-4], 和 target = 1.
+     * 与 target 最接近的三个数的和为 2. (-1 + 2 + 1 = 2).
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int threeSumClosest(int[] nums, int target) {
+        /*
+            做法类似 三数之和
+         */
+        Arrays.sort(nums);
+        int res = nums[0] + nums[1] + nums[2];
+        int n = nums.length;
+        int delta = 0;
+        for (int i = 0; i < n; i++) {
+            int l = i + 1;
+            int r = n - 1;
+            while (l < r) {
+                if (Math.abs(nums[i] + nums[l] + nums[r] - target) < Math.abs(res - target)) {
+                    res = nums[i] + nums[l] + nums[r];
+                }
+                if (nums[i] + nums[l] + nums[r] < target) {
+                    l++;
+                } else if (nums[i] + nums[l] + nums[r] > target) {
+                    r--;
+                } else {
+                    return res;
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * LeetCode.17 电话号码的字母组合
+     * <p>
+     * 给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。
+     * 给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。
+     * 2->abc, 3->def 4->ghi ... 9->wxyz
+     *
+     * @param digits
+     * @return
+     */
+    public List<String> letterCombinations(String digits) {
+        /*
+            首先用一个map存储对应关系，然后用DFS实现
+         */
+        Map<Character, char[]> map = new HashMap<>();
+        map.put('2', new char[]{'a', 'b', 'c'});
+        map.put('3', new char[]{'d', 'e', 'f'});
+        map.put('4', new char[]{'g', 'h', 'i'});
+        map.put('5', new char[]{'j', 'k', 'l'});
+        map.put('6', new char[]{'m', 'n', 'o'});
+        map.put('7', new char[]{'p', 'q', 'r', 's'});
+        map.put('8', new char[]{'t', 'u', 'v'});
+        map.put('9', new char[]{'w', 'x', 'y', 'z'});
+
+        List<String> res = new ArrayList<>();
+        if (digits.length() == 0) {
+            return res;
+        }
+        dfs(digits, map, res, 0, "");
+        return res;
+    }
+
+    /**
+     * LeetCode.18 四数之和
+     * <p>
+     * 给定一个包含 n 个整数的数组 nums 和一个目标值 target，判断 nums 中是否存在
+     * 四个元素 a，b，c 和 d ，使得 a + b + c + d 的值与 target 相等？找出所有满
+     * 足条件且不重复的四元组。
+     * <p>
+     * 注意：
+     * 答案中不可以包含重复的四元组。
+     * <p>
+     * 示例：
+     * 给定数组 nums = [1, 0, -1, 0, -2, 2]，和 target = 0。
+     * 满足要求的四元组集合为：
+     * [
+     * [-1,  0, 0, 1],
+     * [-2, -1, 1, 2],
+     * [-2,  0, 0, 2]
+     * ]
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        /*
+            类似三数之和，先排序。思想是两个for循环里嵌套一个两数之和
+         */
+        Arrays.sort(nums);
+        List<List<Integer>> res = new ArrayList<>();
+        for (int i = 0; i < nums.length - 3; i++) {
+            // 重复情况
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            for (int j = i + 1; j < nums.length - 2; j++) {
+                // 重复情况
+                if (j > i + 1 && nums[j] == nums[j - 1]) {
+                    continue;
+                }
+                int l = j + 1;
+                int r = nums.length - 1;
+                // 这个target是里面两数之和的target
+                int curTarget = target - nums[i] - nums[j];
+                while (l < r) {
+                    int sum = nums[l] + nums[r];
+                    if (sum == curTarget) {
+                        // 将四个数加入res
+                        List<Integer> list = new ArrayList<>();
+                        list.add(nums[i]);
+                        list.add(nums[j]);
+                        list.add(nums[l]);
+                        list.add(nums[r]);
+                        res.add(list);
+                        l++;
+                        while (l < r && nums[l] == nums[l - 1]) {
+                            l++;
+                        }
+                        r--;
+                        while (l < r && nums[r] == nums[r + 1]) {
+                            r--;
+                        }
+                    } else if (sum < curTarget) {
+                        l++;
+                    } else {
+                        r--;
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * dfs
+     *
+     * @param digits
+     * @param map
+     * @param res
+     * @param start  初始位置
+     * @param cur    当前的字符
+     */
+    private void dfs(String digits, Map<Character, char[]> map, List<String> res, int start, String cur) {
+        if (start >= digits.length()) {
+            res.add(cur);
+            return;
+        }
+        for (char c : map.get(digits.charAt(start))) {
+            dfs(digits, map, res, start + 1, cur + c);
+        }
+    }
+
+    /**
      * leetcode.29 两数相除
      * 给定两个整数，被除数 dividend 和除数 divisor。将两数相除，要求不使用乘法、除法和 mod 运算符。
      * 返回被除数 dividend 除以除数 divisor 得到的商。
