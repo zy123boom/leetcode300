@@ -457,6 +457,26 @@ public class Main {
         return res;
     }
 
+
+    /**
+     * dfs
+     *
+     * @param digits
+     * @param map
+     * @param res
+     * @param start  初始位置
+     * @param cur    当前的字符
+     */
+    private void dfs(String digits, Map<Character, char[]> map, List<String> res, int start, String cur) {
+        if (start >= digits.length()) {
+            res.add(cur);
+            return;
+        }
+        for (char c : map.get(digits.charAt(start))) {
+            dfs(digits, map, res, start + 1, cur + c);
+        }
+    }
+
     /**
      * LeetCode.18 四数之和
      * <p>
@@ -527,25 +547,6 @@ public class Main {
             }
         }
         return res;
-    }
-
-    /**
-     * dfs
-     *
-     * @param digits
-     * @param map
-     * @param res
-     * @param start  初始位置
-     * @param cur    当前的字符
-     */
-    private void dfs(String digits, Map<Character, char[]> map, List<String> res, int start, String cur) {
-        if (start >= digits.length()) {
-            res.add(cur);
-            return;
-        }
-        for (char c : map.get(digits.charAt(start))) {
-            dfs(digits, map, res, start + 1, cur + c);
-        }
     }
 
     /**
