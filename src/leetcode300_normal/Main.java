@@ -740,6 +740,46 @@ public class Main {
     }
 
     /**
+     * LeetCode.31 下一个排列
+     * <p>
+     * 实现获取下一个排列的函数，算法需要将给定数字序列重新排列成字典序中下一个更大的排列。
+     * 如果不存在下一个更大的排列，则将数字重新排列成最小的排列（即升序排列）。
+     * 必须原地修改，只允许使用额外常数空间。
+     * <p>
+     * 以下是一些例子，输入位于左侧列，其相应输出位于右侧列。
+     * 1,2,3 → 1,3,2
+     * 3,2,1 → 1,2,3
+     * 1,1,5 → 1,5,1
+     *
+     * @param nums
+     */
+    public void nextPermutation(int[] nums) {
+        /*
+            题意：例如[1,4,3,2]，从后往前，1比4小，从1后面找比1大的最小的数，即
+            2，然后交换两个位置，然后后面的排序。
+            [1,4,3,2]->[2,1,3,4]
+         */
+        for (int i = nums.length - 1; i >= 0; i--) {
+            if (i == 0) {
+                Arrays.sort(nums);
+                return;
+            } else {
+                if (nums[i] > nums[i - 1]) {
+                    Arrays.sort(nums, i, nums.length);
+                    for (int j = i; j < nums.length; j++) {
+                        if (nums[j] > nums[i - 1]) {
+                            int tmp = nums[j];
+                            nums[j] = nums[i - 1];
+                            nums[i - 1] = tmp;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * LeetCode.146 LRU缓存机制
      * <p>
      * 运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作：
