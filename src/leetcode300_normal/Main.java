@@ -550,6 +550,133 @@ public class Main {
     }
 
     /**
+     * LeetCode.19 删除链表的倒数第N个节点
+     * 给定一个链表，删除链表的倒数第 n 个节点，并且返回链表的头结点。
+     * <p>
+     * 示例：
+     * <p>
+     * 给定一个链表: 1->2->3->4->5, 和 n = 2.
+     * 当删除了倒数第二个节点后，链表变为 1->2->3->5.
+     *
+     * @param head
+     * @param n
+     * @return
+     */
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        /*
+            快慢指针法。
+            首先让快指针移动n个位置，然后同时移动快慢指针，此时慢指针指向要
+            移除的前一个元素，然后删除这个元素，即node.next = node.next.next
+         */
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode fast = dummy;
+        ListNode slow = dummy;
+        for (int i = 0; i < n; i++) {
+            fast = fast.next;
+        }
+        while (fast.next != null) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        slow.next = slow.next.next;
+        return dummy.next;
+    }
+
+    /**
+     * LeetCode.22 括号生成
+     * <p>
+     * 给出 n 代表生成括号的对数，请你写出一个函数，使其能够生成所有可能的并且有效的括号组合。
+     * <p>
+     * 例如，给出 n = 3，生成结果为：
+     * <p>
+     * [
+     * "((()))",
+     * "(()())",
+     * "(())()",
+     * "()(())",
+     * "()()()"
+     * ]
+     *
+     * @param n
+     * @return
+     */
+    public List<String> generateParenthesis(int n) {
+        /*
+            此类问题一般使用dfs。
+            当left<n，说明左括号没有满，加左括号
+            当left>right，说明左括号足够了，缺少右括号配对，所以加右括号
+         */
+        List<String> res = new ArrayList<>();
+        if (n <= 0) {
+            return res;
+        }
+        dfs(new StringBuilder(), res, n, 0, 0);
+        return res;
+    }
+
+    /**
+     * 22题帮助函数
+     *
+     * @param curr
+     * @param res
+     * @param n
+     * @param left  左括号数
+     * @param right 右括号数
+     */
+    private void dfs(StringBuilder curr, List<String> res, int n, int left, int right) {
+        if (right == n) {
+            res.add(curr.toString());
+            return;
+        }
+        if (left < n) {
+            dfs(curr.append("("), res, n, left + 1, right);
+            curr.deleteCharAt(curr.length() - 1);
+        }
+        if (left > right) {
+            dfs(curr.append(")"), res, n, left, right + 1);
+            curr.deleteCharAt(curr.length() - 1);
+        }
+    }
+
+    /**
+     * LeetCode.24 两两交换链表中的节点
+     * <p>
+     * 给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。
+     * 你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
+     * <p>
+     * 示例:
+     * 给定 1->2->3->4, 你应该返回 2->1->4->3.
+     *
+     * @param head
+     * @return
+     */
+    public ListNode swapPairs(ListNode head) {
+        /*
+            例如1->2->3->4
+            1.让1指向3
+            2.让2指向1
+            3.此时2为第一个节点了，让当前节点指向2
+            4.当前节点后移两位
+         */
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode cur = dummy;
+        while (cur.next != null && cur.next.next != null) {
+            // 节点"1"，叫next是因为前面有个dummy
+            ListNode next = cur.next;
+            // 节点"2"
+            ListNode nextnext = cur.next.next;
+            // 步骤1234
+            next.next = nextnext.next;
+            nextnext.next = next;
+            cur.next = nextnext;
+            cur = cur.next.next;
+        }
+        return dummy.next;
+    }
+
+    /**
      * leetcode.29 两数相除
      * 给定两个整数，被除数 dividend 和除数 divisor。将两数相除，要求不使用乘法、除法和 mod 运算符。
      * 返回被除数 dividend 除以除数 divisor 得到的商。
