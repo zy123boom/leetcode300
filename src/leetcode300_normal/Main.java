@@ -836,6 +836,72 @@ public class Main {
     }
 
     /**
+     * LeetCode.34 在排序数组中查找元素的第一个和最后一个位置
+     * <p>
+     * 给定一个按照升序排列的整数数组 nums，和一个目标值 target。找出给定目标值在
+     * 数组中的开始位置和结束位置。
+     * <p>
+     * 你的算法时间复杂度必须是 O(log n) 级别。
+     * 如果数组中不存在目标值，返回 [-1, -1]。
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int[] searchRange(int[] nums, int target) {
+        /*
+            由于复杂度O(log n)，所以使用二分。做两次二分来分别
+            找出起始点和终止点
+            两个大体相同，区别是找起始点的时候，当nums[mid]==target时，移动右指针。
+            而找终止点的时候，移动的是左指针。
+         */
+        int[] res = {-1, -1};
+        if (nums == null || nums.length == 0) {
+            return res;
+        }
+        int startPoint = -1, endPoint = -1;
+        int start = 0, end = nums.length - 1;
+
+        // 找起始点
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (nums[mid] >= target) {
+                end = mid;
+            } else {
+                start = mid;
+            }
+        }
+        if (nums[start] == target) {
+            startPoint = start;
+        } else if (nums[end] == target) {
+            startPoint = end;
+        }
+        if (startPoint == -1) {
+            return res;
+        }
+
+        start = 0;
+        end = nums.length - 1;
+        // 找终止点
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (nums[mid] > target) {
+                end = mid;
+            } else {
+                start = mid;
+            }
+        }
+        if (nums[end] == target) {
+            endPoint = end;
+        } else if (nums[start] == target) {
+            endPoint = start;
+        }
+        res[0] = startPoint;
+        res[1] = endPoint;
+        return res;
+    }
+
+    /**
      * LeetCode.146 LRU缓存机制
      * <p>
      * 运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作：
