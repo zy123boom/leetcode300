@@ -902,6 +902,77 @@ public class Main {
     }
 
     /**
+     * LeetCode.39 组合总和
+     * 给定一个无重复元素的数组 candidates 和一个目标数 target ，找出 candidates 中
+     * 所有可以使数字和为 target 的组合。
+     * candidates 中的数字可以无限制重复被选取。
+     * <p>
+     * 说明：
+     * 所有数字（包括 target）都是正整数。
+     * 解集不能包含重复的组合。 
+     * <p>
+     * 示例 1:
+     * 输入: candidates = [2,3,6,7], target = 7,
+     * 所求解集为:
+     * [
+     * [7],
+     * [2,2,3]
+     * ]
+     * <p>
+     * 示例 2:
+     * 输入: candidates = [2,3,5], target = 8,
+     * 所求解集为:
+     * [
+     *   [2,2,2,2],
+     *   [2,3,3],
+     *   [3,5]
+     * ]
+     *
+     * @param candidates
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        /*
+            该类题采用DFS
+         */
+        List<List<Integer>> res = new ArrayList<>();
+        if (candidates == null || candidates.length == 0 || target == 0) {
+            return res;
+        }
+        Arrays.sort(candidates);
+        dfs(candidates, target, 0, res, new ArrayList<Integer>());
+        return res;
+    }
+
+    /**
+     * LeetCode.39帮助函数
+     * 通过dfs，看数组的值跟target的关系。如果candidates[i] > target，说明不可能凑出来，直接break。
+     * 否则就说明有可能，然后继续进行backtracking。
+     *
+     * @param candidates
+     * @param target
+     * @param index
+     * @param res
+     * @param curr
+     */
+    private void dfs(int[] candidates, int target, int index, List<List<Integer>> res, List<Integer> curr) {
+        if (target == 0) {
+            res.add(new ArrayList<>(curr));
+            return;
+        } else if (target > 0) {
+            for (int i = index; i < candidates.length; i++) {
+                if (candidates[i] > target) {
+                    break;
+                }
+                curr.add(candidates[i]);
+                dfs(candidates, target - candidates[i], i, res, curr);
+                curr.remove(curr.size() - 1);
+            }
+        }
+    }
+
+    /**
      * LeetCode.146 LRU缓存机制
      * <p>
      * 运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作：
