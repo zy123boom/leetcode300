@@ -1,6 +1,8 @@
 package leetcode300_normal;
 
 
+import com.sun.xml.internal.bind.v2.model.core.ID;
+
 import java.util.*;
 
 /**
@@ -1077,6 +1079,184 @@ public class Main {
             }
         }
         return sb.length() == 0 ? "0" : sb.toString();
+    }
+
+    /**
+     * LeetCode.46 全排列
+     * 给定一个没有重复数字的序列，返回其所有可能的全排列。
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permute(int[] nums) {
+        /*
+            dfs + 递归的题目，回溯思想
+         */
+        List<List<Integer>> res = new ArrayList<>();
+        if (nums == null || nums.length == 0) {
+            return res;
+        }
+        dfs(res, new ArrayList<>(), nums, new boolean[nums.length]);
+        return res;
+    }
+
+    /**
+     * 46题帮助函数
+     *
+     * @param res
+     * @param cur
+     * @param nums
+     * @param visited 判断当前数是否被遍历过了
+     */
+    public void dfs(List<List<Integer>> res, List<Integer> cur, int[] nums, boolean[] visited) {
+        if (cur.size() == nums.length) {
+            res.add(new ArrayList<>(cur));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (visited[i]) {
+                continue;
+            }
+            cur.add(nums[i]);
+            visited[i] = true;
+            dfs(res, cur, nums, visited);
+            cur.remove(cur.size() - 1);
+            visited[i] = false;
+        }
+    }
+
+    /**
+     * LeetCode.47 全排列II
+     * 给定一个可包含重复数字的序列，返回所有不重复的全排列。
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        /*
+            思想：DFS + 递归， backtracking
+            此处为了防止重复，做判断，如果当前下标的值与上一个相同并且上一个被访问过了，
+            就直接跳过。
+            此处，数组首先进行排序再进行dfs。
+         */
+        List<List<Integer>> res = new ArrayList<>();
+        if (nums == null || nums.length == 0) {
+            return res;
+        }
+        Arrays.sort(nums);
+        dfs2(res, new ArrayList<>(), nums, new boolean[nums.length]);
+        return null;
+    }
+
+    /**
+     * 47题帮助函数
+     *
+     * @param res
+     * @param cur
+     * @param nums
+     * @param visited
+     */
+    private void dfs2(List<List<Integer>> res, List<Integer> cur, int[] nums, boolean[] visited) {
+        if (cur.size() == nums.length) {
+            res.add(new ArrayList<>(cur));
+            return;
+        }
+
+        for (int i = 0; i < nums.length; i++) {
+            if (visited[i]) {
+                continue;
+            }
+            if (i > 0 && nums[i] == nums[i - 1] && !visited[i - 1]) {
+                continue;
+            }
+            cur.add(nums[i]);
+            visited[i] = true;
+            dfs2(res, cur, nums, visited);
+            cur.remove(cur.size() - 1);
+            visited[i] = false;
+        }
+    }
+
+    /**
+     * LeetCode.78 子集
+     * 给定一组不含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> subsets(int[] nums) {
+        /*
+            空集是任何集合的子集，从空集开始，开始选nums数组的值，可以选也可以不选。
+            如果不选，一直空下去。如果选的话，再下来的一个数也可以选也可以不选。
+            最后得到的解集就是答案。
+         */
+        List<List<Integer>> res = new ArrayList<>();
+        if (nums == null || nums.length == 0) {
+            return res;
+        }
+        helper(res, new ArrayList<>(), nums, 0);
+        return res;
+    }
+
+    /**
+     * 78题帮助函数
+     *
+     * @param res
+     * @param cur
+     * @param nums
+     * @param index
+     */
+    private void helper(List<List<Integer>> res, List<Integer> cur, int[] nums, int index) {
+        // base case
+        if (index == nums.length) {
+            res.add(new ArrayList<>(cur));
+            return;
+        }
+        // not choice
+        helper(res, cur, nums, index + 1);
+        // choice
+        cur.add(nums[index]);
+        helper(res, cur, nums, index + 1);
+        cur.remove(cur.size() - 1);
+    }
+
+    /**
+     * LeetCode.90 子集II
+     * 给定一个可能包含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）。
+     * <p>
+     * 说明：解集不能包含重复的子集。
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (nums == null || nums.length == 0) {
+            return res;
+        }
+        Arrays.sort(nums);
+        helper2(res, new ArrayList<>(), nums, 0);
+        return res;
+    }
+
+    private void helper2(List<List<Integer>> res, List<Integer> cur, int[] nums, int index) {
+        // base case
+        if (index == nums.length) {
+            res.add(new ArrayList<>(cur));
+            return;
+        }
+        // choice
+        cur.add(nums[index]);
+        helper2(res, cur, nums, index + 1);
+        cur.remove(cur.size() - 1);
+
+        // 跳过重复情况
+        while (index + 1 < nums.length && nums[index] == nums[index + 1]) {
+            index++;
+        }
+
+        // no choice
+        helper(res, cur, nums, index + 1);
     }
 
     /**
