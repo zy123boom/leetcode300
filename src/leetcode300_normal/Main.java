@@ -1043,6 +1043,43 @@ public class Main {
     }
 
     /**
+     * LeetCode.43 字符串相乘
+     * 给定两个以字符串形式表示的非负整数 num1 和 num2，返回 num1 和 num2 的乘积，
+     * 它们的乘积也表示为字符串形式。
+     *
+     * @param num1
+     * @param num2
+     * @return
+     */
+    public String multiply(String num1, String num2) {
+        if (num1.length() == 0 || num2.length() == 0) {
+            return "0";
+        }
+        int len1 = num1.length();
+        int len2 = num2.length();
+        int[] result = new int[len1 + len2];
+        for (int i = len1 - 1; i >= 0; i--) {
+            for (int j = len2 - 1; j >= 0; j--) {
+                int mul = (num1.charAt(i) - '0') * (num2.charAt(j) - '0');
+                // 低位和高位，例如3 * 5，低位为5，高位为进上去的1
+                int posLow = i + j + 1;
+                int posHigh = i + j;
+                mul += result[posLow];
+                result[posLow] = mul % 10;
+                result[posHigh] += mul / 10;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int res : result) {
+            if (!(sb.length() == 0 && res == 0)) {
+                sb.append(res);
+            }
+        }
+        return sb.length() == 0 ? "0" : sb.toString();
+    }
+
+    /**
      * LeetCode.146 LRU缓存机制
      * <p>
      * 运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作：
