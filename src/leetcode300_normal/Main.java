@@ -947,14 +947,14 @@ public class Main {
 
     /**
      * LeetCode.39帮助函数
-     * 通过dfs，看数组的值跟target的关系。如果candidates[i] > target，说明不可能凑出来，直接break。
-     * 否则就说明有可能，然后继续进行backtracking。
+     * 通过dfs，看数组candidates的值跟target的关系。如果candidates[i] > target，
+     * 说明不可能凑出来，直接break。否则就说明有可能，然后继续进行backtracking。
      *
      * @param candidates
      * @param target
-     * @param index
+     * @param index      当前需要取的数的下标，第一轮是0
      * @param res
-     * @param curr
+     * @param curr       当前得到的组合总和
      */
     private void dfs(int[] candidates, int target, int index, List<List<Integer>> res, List<Integer> curr) {
         if (target == 0) {
@@ -967,6 +967,76 @@ public class Main {
                 }
                 curr.add(candidates[i]);
                 dfs(candidates, target - candidates[i], i, res, curr);
+                curr.remove(curr.size() - 1);
+            }
+        }
+    }
+
+    /**
+     * LeetCode.40 组合总和II
+     * 给定一个数组 candidates 和一个目标数 target ，找出 candidates 中所有
+     * 可以使数字和为 target 的组合。
+     * candidates 中的每个数字在每个组合中只能使用一次。
+     * <p>
+     * 说明：
+     * 所有数字（包括目标数）都是正整数。
+     * 解集不能包含重复的组合。 
+     * <p>
+     * 示例 1:
+     * 输入: candidates = [10,1,2,7,6,1,5], target = 8,
+     * 所求解集为:
+     * [
+     * [1, 7],
+     * [1, 2, 5],
+     * [2, 6],
+     * [1, 1, 6]
+     * ]
+     * <p>
+     * 示例 2:
+     * 输入: candidates = [2,5,2,1,2], target = 5,
+     * 所求解集为:
+     * [
+     *   [1,2,2],
+     *   [5]
+     * ]
+     *
+     * @param candidates
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (candidates == null || candidates.length == 0 || target == 0) {
+            return res;
+        }
+        Arrays.sort(candidates);
+        dfs2(candidates, target, 0, res, new ArrayList<Integer>());
+        return res;
+    }
+
+    /**
+     * LeetCode.40帮助函数
+     * <p>
+     * 与组合总和I不同的是，每次判断之前，判断一下arr[index]是否等于arr[index-1]，如果相等，
+     * 说明重复，重复分支不再做。并且同时当前下标i不等于index，因为是新分支。
+     *
+     * @param candidates
+     * @param target
+     * @param index
+     * @param res
+     * @param curr
+     */
+    private void dfs2(int[] candidates, int target, int index, List<List<Integer>> res, ArrayList<Integer> curr) {
+        if (target == 0) {
+            res.add(new ArrayList<>(curr));
+            return;
+        } else if (target > 0) {
+            for (int i = index; i < candidates.length; i++) {
+                if (i != index && candidates[i] == candidates[i - 1]) {
+                    continue;
+                }
+                curr.add(candidates[i]);
+                dfs2(candidates, target - candidates[i], i + 1, res, curr);
                 curr.remove(curr.size() - 1);
             }
         }
