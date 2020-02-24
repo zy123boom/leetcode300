@@ -1,5 +1,9 @@
 package leetcode300_hard;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * LeetCode前300道，困难题
  * 题目来源：力扣（LeetCode）
@@ -51,5 +55,125 @@ public class Main {
             }
         }
         return match[s.length()][p.length()];
+    }
+
+    /**
+     * LeetCode.51 N皇后
+     * n 皇后问题研究的是如何将 n 个皇后放置在 n×n 的棋盘上，并且使皇后彼此之间不能相互攻击。
+     * 给定一个整数 n，返回所有不同的 n 皇后问题的解决方案。
+     * <p>
+     * 每一种解法包含一个明确的 n 皇后问题的棋子放置方案，该方案中 'Q' 和 '.' 分别代表了皇后和空位。
+     * <p>
+     * 示例:
+     * 输入: 4
+     * 输出: [
+     * [".Q..",  // 解法 1
+     * "...Q",
+     * "Q...",
+     * "..Q."],
+     * <p>
+     * ["..Q.",  // 解法 2
+     * "Q...",
+     * "...Q",
+     * ".Q.."]
+     * ]
+     * 解释: 4 皇后问题存在两个不同的解法。
+     *
+     * @param n
+     * @return
+     */
+    public List<List<String>> solveNQueens(int n) {
+        List<List<String>> res = new ArrayList<>();
+        char[][] board = new char[n][n];
+        init(board);
+        helper(res, board, 0);
+        return res;
+    }
+
+    /**
+     * 51题帮助函数
+     * 初始化数组，变为.
+     *
+     * @param board
+     */
+    private void init(char[][] board) {
+        for (int i = 0; i < board.length; i++) {
+            Arrays.fill(board[i], '.');
+        }
+    }
+
+    /**
+     * 51题帮助函数
+     * 核心函数
+     *
+     * @param res
+     * @param board
+     * @param rowIndex
+     */
+    private void helper(List<List<String>> res, char[][] board, int rowIndex) {
+        if (rowIndex == board.length) {
+            res.add(generate(board));
+        }
+
+        // 列从0开始，看能不能摆放皇后
+        for (int colIndex = 0; colIndex < board.length; colIndex++) {
+            if (isValid(board, rowIndex, colIndex)) {
+                board[rowIndex][colIndex] = 'Q';
+                helper(res, board, rowIndex + 1);
+                board[rowIndex][colIndex] = '.';
+            }
+        }
+    }
+
+    /**
+     * 51题帮助函数
+     * 判断当前坐标能否摆放皇后
+     *
+     * @param board
+     * @param rowIndex
+     * @param colIndex
+     */
+    private boolean isValid(char[][] board, int rowIndex, int colIndex) {
+        // 1.判断之前的列有没有其他皇后
+        for (int i = 0; i < rowIndex; i++) {
+            if (board[i][colIndex] == 'Q') {
+                return false;
+            }
+        }
+
+        // 2.判断左上到右下的对角线，当前行列的左上角坐标是(row - 1, col - 1)
+        for (int i = rowIndex - 1,  j = colIndex - 1; i >= 0 && j >= 0; i--, j--) {
+            if (board[i][j] == 'Q') {
+                return false;
+            }
+        }
+
+        // 3.判断右上到左下的对角线，当前行列的右上角的坐标是(row - 1, col + 1)
+        for (int i = rowIndex - 1, j = colIndex + 1; i >= 0 && j < board.length; i--, j++) {
+            if (board[i][j] == 'Q') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 51帮助函数
+     * 将字符二维数组转化为嵌套List
+     *
+     * @param board
+     * @return
+     */
+    private List<String> generate(char[][] board) {
+        List<String> res = new ArrayList<>();
+        for (char[] row : board) {
+            StringBuilder sb = new StringBuilder();
+            for (char c : row) {
+                sb.append(c);
+            }
+            res.add(sb.toString());
+        }
+        return res;
     }
 }
