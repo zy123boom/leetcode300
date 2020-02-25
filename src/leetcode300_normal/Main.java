@@ -1178,6 +1178,119 @@ public class Main {
     }
 
     /**
+     * LeetCode.48 翻转图像
+     * 给定一个 n × n 的二维矩阵表示一个图像。
+     * 将图像顺时针旋转 90 度。
+     * <p>
+     * 说明：
+     * 你必须在原地旋转图像，这意味着你需要直接修改输入的二维矩阵。请不要使用另一个矩阵来旋转图像。
+     * <p>
+     * 示例 1:
+     * 给定 matrix =
+     * [
+     * [1,2,3],
+     * [4,5,6],
+     * [7,8,9]
+     * ],
+     * 原地旋转输入矩阵，使其变为:
+     * [
+     * [7,4,1],
+     * [8,5,2],
+     * [9,6,3]
+     * ]
+     *
+     * @param matrix
+     */
+    public void rotate(int[][] matrix) {
+        // 1.以对角线为轴进行交换
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j <= i; j++) {
+                if (i == j) {
+                    continue;
+                }
+                int tmp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = tmp;
+            }
+        }
+
+        // 2.以中轴线对称进行列交换
+        for (int i = 0, j = matrix.length - 1; i < matrix.length / 2; i++, j--) {
+            for (int k = 0; k < matrix.length; k++) {
+                int tmp = matrix[k][i];
+                matrix[k][i] = matrix[k][j];
+                matrix[k][j] = tmp;
+            }
+        }
+    }
+
+    /**
+     * LeetCode.49 字母异位词分组
+     * 给定一个字符串数组，将字母异位词组合在一起。字母异位词指字母相同，但排列不同的字符串。
+     * <p>
+     * 示例:
+     * <p>
+     * 输入: ["eat", "tea", "tan", "ate", "nat", "bat"],
+     * 输出:
+     * [
+     * ["ate","eat","tea"],
+     * ["nat","tan"],
+     * ["bat"]
+     * ]
+     *
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+        /*
+            将每个字符串的字母排序，看是否是相同的，相同的就是异位词放在一组
+         */
+        // 存排好序的字符串对应哪一组
+        Map<String, Integer> map = new HashMap<>();
+        List<List<String>> res = new ArrayList<>();
+        // 分组
+        int count = 0;
+        for (String str : strs) {
+            char[] chars = str.toCharArray();
+            Arrays.sort(chars);
+            String newStr = new String(chars);
+            if (!map.containsKey(newStr)) {
+                // 开启新的一组
+                res.add(new ArrayList<>());
+                map.put(newStr, count);
+                count++;
+            }
+            res.get(map.get(newStr)).add(str);
+        }
+        return res;
+    }
+
+    /**
+     * LeetCode.50 Pow(x, n)
+     * 实现 pow(x, n) ，即计算 x 的 n 次幂函数。
+     *
+     * @param x
+     * @param n
+     * @return
+     */
+    public double myPow(double x, int n) {
+        /*
+            求x的n/2次方，因为pow(x, n) = pow(pow(x, n/2), n/2)
+         */
+        if (n == 0) return 1;
+        if (n == 1) return x;
+        if (n == -1) return 1 / x;
+        double res = myPow(x, n / 2);
+        res *= res;
+        if (n % 2 == 1) {
+            res *= x;
+        } else if (n % 2 == -1) {
+            res *= 1 / x;
+        }
+        return res;
+    }
+
+    /**
      * LeetCode.78 子集
      * 给定一组不含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）
      *
@@ -1257,53 +1370,6 @@ public class Main {
 
         // no choice
         helper(res, cur, nums, index + 1);
-    }
-
-    /**
-     * LeetCode.48 翻转图像
-     * 给定一个 n × n 的二维矩阵表示一个图像。
-     * 将图像顺时针旋转 90 度。
-     * <p>
-     * 说明：
-     * 你必须在原地旋转图像，这意味着你需要直接修改输入的二维矩阵。请不要使用另一个矩阵来旋转图像。
-     * <p>
-     * 示例 1:
-     * 给定 matrix =
-     * [
-     * [1,2,3],
-     * [4,5,6],
-     * [7,8,9]
-     * ],
-     * 原地旋转输入矩阵，使其变为:
-     * [
-     * [7,4,1],
-     * [8,5,2],
-     * [9,6,3]
-     * ]
-     *
-     * @param matrix
-     */
-    public void rotate(int[][] matrix) {
-        // 1.以对角线为轴进行交换
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j <= i; j++) {
-                if (i == j) {
-                    continue;
-                }
-                int tmp = matrix[i][j];
-                matrix[i][j] = matrix[j][i];
-                matrix[j][i] = tmp;
-            }
-        }
-
-        // 2.以中轴线对称进行列交换
-        for (int i = 0, j = matrix.length - 1; i < matrix.length / 2; i++, j--) {
-            for (int k = 0; k < matrix.length; k++) {
-                int tmp = matrix[k][i];
-                matrix[k][i] = matrix[k][j];
-                matrix[k][j] = tmp;
-            }
-        }
     }
 
     /**
