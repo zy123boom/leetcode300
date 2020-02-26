@@ -1291,6 +1291,62 @@ public class Main {
     }
 
     /**
+     * LeetCode.54 螺旋矩阵
+     * <p>
+     * 给定一个包含 m x n 个元素的矩阵（m 行, n 列），请按照顺时针螺旋顺序，返回矩阵中的所有元素。
+     * <p>
+     * 示例 1:
+     * 输入:
+     * [
+     * [ 1, 2, 3 ],
+     * [ 4, 5, 6 ],
+     * [ 7, 8, 9 ]
+     * ]
+     * 输出: [1,2,3,6,9,8,7,4,5]
+     *
+     * @param matrix
+     * @return
+     */
+    public List<Integer> spiralOrder(int[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return new ArrayList<>();
+        }
+        List<Integer> res = new ArrayList<>();
+        int top = 0, bottom = matrix.length - 1;
+        int left = 0, right = matrix[0].length - 1;
+        while (top < bottom && left < right) {
+            for (int i = left; i < right; i++) {
+                res.add(matrix[top][i]);
+            }
+            for (int i = top; i < bottom; i++) {
+                res.add(matrix[i][right]);
+            }
+            for (int i = right; i > left; i--) {
+                res.add(matrix[bottom][i]);
+            }
+            for (int i = bottom; i > top; i--) {
+                res.add(matrix[i][left]);
+            }
+            left++;
+            right--;
+            top++;
+            bottom--;
+        }
+
+        // 特殊情况1：只剩一行（含一个）
+        if (top == bottom) {
+            for (int i = left; i <= right; i++) {
+                res.add(matrix[top][i]);
+            }
+        } else if (left == right) { // 特殊情况2：只剩一列
+            for (int i = top; i <= bottom; i++) {
+                res.add(matrix[i][left]);
+            }
+        }
+        return res;
+    }
+
+    /**
      * LeetCode.78 子集
      * 给定一组不含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）
      *
