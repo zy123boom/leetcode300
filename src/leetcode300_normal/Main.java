@@ -1347,6 +1347,58 @@ public class Main {
     }
 
     /**
+     * LeetCode.55 跳跃游戏
+     *
+     * @param nums
+     * @return
+     */
+    public boolean canJump(int[] nums) {
+        if (nums.length < 2) return true;
+        int reach = 0, i = 0;
+        for (i = 0; i < nums.length && i <= reach; i++) {
+            reach = Math.max(nums[i] + i, reach);
+            if (reach >= nums.length - 1) return true;
+        }
+        return false;
+    }
+
+    /**
+     * LeetCode.56 合并区间
+     * 给出一个区间的集合，请合并所有重叠的区间。
+     * <p>
+     * 示例 1:
+     * 输入: [[1,3],[2,6],[8,10],[15,18]]
+     * 输出: [[1,6],[8,10],[15,18]]
+     * 解释: 区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].
+     *
+     * @param intervals
+     * @return
+     */
+    public int[][] merge(int[][] intervals) {
+        /*
+            定义两个变量previous和current，分别表示前一个区间和当前的区间
+            如果没有融合，当前区间就变成新的previous，下一个区间成为新的current
+            如果发生融合，更新前一个区间的结束时间：
+         */
+        // 将所有的区间按照起始时间的先后顺序排序
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+
+        int[] previous = null;
+        List<int[]> res = new ArrayList<>();
+
+        for (int[] current : intervals) {
+            // 第一个区间/和前一个区间没有重叠，直接加到结果
+            if (previous == null || current[0] > previous[1]) {
+                res.add(previous = current);
+            } else {
+                // 发生重叠，更新前一个区间的结束时间
+                previous[1] = Math.max(previous[1], current[1]);
+            }
+        }
+        return res.toArray(new int[res.size()][]);
+    }
+
+    /**
      * LeetCode.78 子集
      * 给定一组不含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）
      *
