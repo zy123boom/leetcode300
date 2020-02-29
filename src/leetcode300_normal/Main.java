@@ -655,7 +655,7 @@ public class Main {
      */
     public ListNode swapPairs(ListNode head) {
         /*
-            例如1->2->3->4
+            例如dummy->1->2->3->4
             1.让1指向3
             2.让2指向1
             3.此时2为第一个节点了，让当前节点指向2
@@ -1437,6 +1437,104 @@ public class Main {
             res[n / 2][n / 2] = k;
         }
         return res;
+    }
+
+    /**
+     * LeetCode.60 第k个排列
+     * 给出集合 [1,2,3,…,n]，其所有元素共有 n! 种排列。
+     * 按大小顺序列出所有排列情况，并一一标记，当 n = 3 时, 所有排列如下：
+     * <p>
+     * "123"
+     * "132"
+     * "213"
+     * "231"
+     * "312"
+     * "321"
+     * 给定 n 和 k，返回第 k 个排列。
+     * <p>
+     * 说明：
+     * 给定 n 的范围是 [1, 9]。
+     * 给定 k 的范围是[1,  n!]。
+     * <p>
+     * 示例 1:
+     * 输入: n = 3, k = 3
+     * 输出: "213"
+     *
+     * @param n
+     * @param k
+     * @return
+     */
+    public String getPermutation(int n, int k) {
+        /*
+            有n!个不同的排列，将这些排列分成n组，每一组将会有(n-1)!个不同的排列。
+            求每位：f[n] = f[n - 1] * n;
+            对于k，先减1，不断的求最高位，然后在可选区间（例如首字符为1-3）内选择，然后取余。
+         */
+        char[] result = new char[n];
+        List<Integer> nums = new ArrayList<>();
+        int[] factorial = new int[n];
+        factorial[0] = 1;
+        for (int i = 1; i < n; i++) {
+            factorial[i] = factorial[i - 1] * i;
+        }
+        // 可选范围
+        for (int i = 1; i <= n; i++) {
+            nums.add(i);
+        }
+        k--;
+        for (int i = 0; i < n; i++) {
+            // 从最高位添加一直到最低位
+            result[i] = Character.forDigit(nums.remove(k / factorial[n - 1 - i]), 10);
+            k = k % factorial[n - 1 - i];
+        }
+        return new String(result);
+    }
+
+    /**
+     * LeetCode.61 旋转链表
+     * 给定一个链表，旋转链表，将链表每个节点向右移动 k 个位置，其中 k 是非负数。
+     * <p>
+     * 示例 1:
+     * 输入: 1->2->3->4->5->NULL, k = 2
+     * 输出: 4->5->1->2->3->NULL
+     * 解释:
+     * 向右旋转 1 步: 5->1->2->3->4->NULL
+     * 向右旋转 2 步: 4->5->1->2->3->NULL
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode rotateRight(ListNode head, int k) {
+        /*
+            快慢指针法。先让快指针移动k%n(n是链表长度)个节点。然后两个指针同时移动
+            直到fast指针指到最后一个元素。然后对链表进行变换。
+            1.  fast.next = head
+            2.  head = slow.next
+            3.  slow.next = null
+         */
+        if (head == null) {
+            return head;
+        }
+        int len = 0;
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast != null) {
+            fast = fast.next;
+            len++;
+        }
+        fast = head;
+        for (int i = 0; i < k % len; i++) {
+            fast = fast.next;
+        }
+        while (fast.next != null) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        fast.next = head;
+        head = slow.next;
+        slow.next = null;
+        return head;
     }
 
     /**
