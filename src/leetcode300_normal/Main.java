@@ -1645,6 +1645,37 @@ public class Main {
         return dp[m - 1][n - 1];
     }
 
+    public String simplifyPath(String path) {
+        String[] wordArr = path.split("/");
+
+        // 保存去掉空串（例如/a//c所产生的)和"."(.代表当前路径)的剩余的
+        List<String> wordList = new ArrayList<>();
+        for (int i = 0; i < wordArr.length; i++) {
+            if (wordArr[i].isEmpty() || wordArr[i].equals(".")) {
+                continue;
+            }
+            wordList.add(wordArr[i]);
+        }
+
+        // 保存简化后的路径
+        List<String> simpleWordList = new ArrayList<>();
+        for (int i = 0; i < wordList.size(); i++) {
+            if (wordList.get(i).equals("..")) {
+                // 遇到".."，删除末尾的单词
+                if (!simpleWordList.isEmpty()) {
+                    simpleWordList.remove(simpleWordList.size() - 1);
+                }
+            } else {
+                // 否则加到简化List里
+                simpleWordList.add(wordList.get(i));
+            }
+        }
+
+        String res = String.join("/", simpleWordList);
+        res = "/" + res;
+        return res;
+    }
+
     /**
      * LeetCode.78 子集
      * 给定一组不含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）
