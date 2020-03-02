@@ -1786,6 +1786,44 @@ public class Main {
     }
 
     /**
+     * LeetCode.77 组合
+     * 给定两个整数 n 和 k，返回 1 ... n 中所有可能的 k 个数的组合。
+     * <p>
+     * 示例:
+     * 输入: n = 4, k = 2
+     * 输出:
+     * [
+     * [2,4],
+     * [3,4],
+     * [2,3],
+     * [1,2],
+     * [1,3],
+     * [1,4],
+     * ]
+     *
+     * @param n
+     * @param k
+     * @return
+     */
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> res = new ArrayList<>();
+        helper(1, n, k, res, new ArrayList<>());
+        return res;
+    }
+
+    private void helper(int start, int n, int k, List<List<Integer>> res, List<Integer> curr) {
+        if (curr.size() == k) {
+            res.add(new ArrayList<>(curr));
+            return;
+        }
+        for (int i = start; i <= n - (curr.size()) + 1; i++) {
+            curr.add(i);
+            helper(start + 1, n, k, res, curr);
+            curr.remove(curr.size() - 1);
+        }
+    }
+
+    /**
      * LeetCode.78 子集
      * 给定一组不含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）
      *
