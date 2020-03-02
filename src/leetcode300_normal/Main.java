@@ -1645,6 +1645,12 @@ public class Main {
         return dp[m - 1][n - 1];
     }
 
+    /**
+     * LeetCode.71 简化路径
+     *
+     * @param path
+     * @return
+     */
     public String simplifyPath(String path) {
         String[] wordArr = path.split("/");
 
@@ -1674,6 +1680,109 @@ public class Main {
         String res = String.join("/", simpleWordList);
         res = "/" + res;
         return res;
+    }
+
+    /**
+     * LeetCode.74 搜索二维矩阵
+     * 编写一个高效的算法来判断 m x n 矩阵中，是否存在一个目标值。该矩阵具有如下特性：
+     * 每行中的整数从左到右按升序排列。
+     * 每行的第一个整数大于前一行的最后一个整数。
+     * <p>
+     * 示例 1:
+     * 输入:
+     * matrix = [
+     * [1,   3,  5,  7],
+     * [10, 11, 16, 20],
+     * [23, 30, 34, 50]
+     * ]
+     * target = 3
+     * 输出: true
+     *
+     * @param matrix
+     * @param target
+     * @return
+     */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        /*
+            首先从右上角开始，若右上角的数大于要找的数，则该数这一列的数都不可能是，
+            所以向左移动再看下一个数。若下一个数还比要找的大，则这一个数的一列数都比他大
+            继续向左移动。 当当前数小于要找的数，则这个数左边的数都比要找的数小，往下移
+            以此类推
+         */
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return false;
+        }
+        int row = 0, col = matrix[0].length - 1;
+        while (row < matrix.length && col >= 0) {
+            if (matrix[row][col] == target) {
+                return true;
+            }
+            if (matrix[row][col] > target) {
+                col--;
+                continue;
+            }
+            if (matrix[row][col] < target) {
+                row++;
+                continue;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * LeetCode.75 颜色分类
+     * <p>
+     * 给定一个包含红色、白色和蓝色，一共 n 个元素的数组，原地对它们进行排序，使得相同颜色
+     * 的元素相邻，并按照红色、白色、蓝色顺序排列。
+     * 此题中，我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。
+     * <p>
+     * 注意:
+     * 不能使用代码库中的排序函数来解决这道题。
+     * <p>
+     * 示例:
+     * 输入: [2,0,2,1,1,0]
+     * 输出: [0,0,1,1,2,2]
+     *
+     * @param nums
+     */
+    public void sortColors(int[] nums) {
+        /*
+            荷兰旗问题。创建两个指针first和last。first指向的为不是0的第一个位置。second指向
+            的为不是2出现的第一个位置。然后遍历，看当前指针index指的是什么。如果是0和first交换，
+            first后移。是2的话同理。当index>last时，所有都排好序了，结束。
+         */
+        if (nums == null || nums.length <= 1) {
+            return;
+        }
+        int first = 0;
+        while (first < nums.length && nums[first] == 0) {
+            first++;
+        }
+        int last = nums.length - 1;
+        while (last >= 0 && nums[last] == 2) {
+            last--;
+        }
+
+        // 从第一个不是0的开始
+        int index = first;
+        while (index <= last) {
+            if (nums[index] == 1) {
+                index++;
+            } else if (nums[index] == 0) {
+                swap(nums, index, first);
+                first++;
+                index++;
+            } else if (nums[index] == 2) {
+                swap(nums, index, last);
+                last--;
+            }
+        }
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
     }
 
     /**
