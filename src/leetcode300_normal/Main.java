@@ -1811,6 +1811,15 @@ public class Main {
         return res;
     }
 
+    /**
+     * LeetCode.77 帮助函数
+     *
+     * @param start 开始的位置
+     * @param n
+     * @param k
+     * @param res
+     * @param curr
+     */
     private void helper(int start, int n, int k, List<List<Integer>> res, List<Integer> curr) {
         if (curr.size() == k) {
             res.add(new ArrayList<>(curr));
@@ -1864,6 +1873,96 @@ public class Main {
         cur.add(nums[index]);
         helper(res, cur, nums, index + 1);
         cur.remove(cur.size() - 1);
+    }
+
+    /**
+     * LeetCode.79 单词搜索
+     * <p>
+     * 给定一个二维网格和一个单词，找出该单词是否存在于网格中。
+     * <p>
+     * 单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直
+     * 相邻的单元格。同一个单元格内的字母不允许被重复使用。
+     * <p>
+     * 示例:
+     * board =
+     * [
+     * ['A','B','C','E'],
+     * ['S','F','C','S'],
+     * ['A','D','E','E']
+     * ]
+     * 给定 word = "ABCCED", 返回 true.
+     * 给定 word = "SEE", 返回 true.
+     * 给定 word = "ABCB", 返回 false.
+     *
+     * @param board
+     * @param word
+     * @return
+     */
+    public boolean exist(char[][] board, String word) {
+        /*
+            搜索类题目，使用DFS
+         */
+        if (board == null) {
+            return false;
+        }
+        // 判断要搜索的方向的字符是否被遍历过了
+        boolean[][] used = new boolean[board.length][board[0].length];
+        for (int row = 0; row < board.length; row++) {
+            for (int col = 0; col < board[0].length; col++) {
+                if (existHelper(board, used, word.toCharArray(), 0, row, col)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 79题帮助函数
+     *
+     * @param board
+     * @param used 是否被访问过，true为被访问过，false未被访问过
+     * @param word
+     * @param index
+     * @param row
+     * @param col
+     * @return
+     */
+    private boolean existHelper(char[][] board, boolean[][] used, char[] word, int index, int row, int col) {
+        // base case
+        if (index == word.length) {
+            return true;
+        }
+        if (row < 0 || row >= board.length || col < 0 || col >= board[0].length) {
+            return false;
+        }
+        if (used[row][col] == true || board[row][col] != word[index]) {
+            return false;
+        }
+
+        used[row][col] = true;
+        // 向上搜
+        boolean exist = existHelper(board, used, word, index + 1, row - 1, col);
+        if (exist) {
+            return true;
+        }
+        // 向下搜
+        exist = existHelper(board, used, word, index + 1, row + 1, col);
+        if (exist) {
+            return true;
+        }
+        // 向左搜
+        exist = existHelper(board, used, word, index + 1, row, col - 1);
+        if (exist) {
+            return true;
+        }
+        // 向右搜
+        exist = existHelper(board, used, word, index + 1, row, col + 1);
+        if (exist) {
+            return true;
+        }
+        used[row][col] = false;
+        return false;
     }
 
     /**
