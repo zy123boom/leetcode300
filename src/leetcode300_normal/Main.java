@@ -807,32 +807,34 @@ public class Main {
         /*
             二分法
          */
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        int start = 0, end = nums.length - 1;
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
             if (nums[mid] == target) {
                 return mid;
-            } else if (nums[mid] < target) {
-                if (nums[mid] >= nums[0]) {
-                    left = mid + 1;
+            }
+            if (nums[start] < nums[mid]) {
+                if (nums[start] <= target && target <= nums[mid]) {
+                    end = mid;
                 } else {
-                    if (target < nums[0]) {
-                        left = mid + 1;
-                    } else {
-                        right = mid - 1;
-                    }
+                    start = mid;
                 }
-            } else if (nums[mid] > target) {
-                if (nums[mid] >= nums[0]) {
-                    if (target < nums[0]) {
-                        left = mid + 1;
-                    } else {
-                        right = mid - 1;
-                    }
+            } else if (nums[mid] < nums[end]) {
+                if (nums[end] >= target && target >= nums[mid]) {
+                    start = mid;
                 } else {
-                    right = mid - 1;
+                    end = mid;
                 }
             }
+        }
+        if (nums[start] == start) {
+            return start;
+        }
+        if (nums[end] == end) {
+            return end;
         }
         return -1;
     }
@@ -2000,6 +2002,102 @@ public class Main {
             }
         }
         return loc;
+    }
+
+    /**
+     * LeetCode.81 搜索旋转排序数组II
+     * 假设按照升序排序的数组在预先未知的某个点上进行了旋转。
+     * ( 例如，数组 [0,0,1,2,2,5,6] 可能变为 [2,5,6,0,0,1,2] )。
+     * 编写一个函数来判断给定的目标值是否存在于数组中。若存在返回 true，否则返回 false。
+     * <p>
+     * 示例 1:
+     * 输入: nums = [2,5,6,0,0,1,2], target = 0
+     * 输出: true
+     * <p>
+     * 示例 2:
+     * 输入: nums = [2,5,6,0,0,1,2], target = 3
+     * 输出: false
+     *
+     * @param nums
+     * @param target
+     * @return
+     */
+    public boolean search2(int[] nums, int target) {
+        /*
+            与I不同的是，如果出现比较相同的情况，让start++，总会出现不一样的情况，
+            可以使用I的方法。
+         */
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        int start = 0, end = nums.length - 1;
+        int mid;
+        while (start + 1 < end) {
+            mid = start + (end - start) / 2;
+            if (nums[mid] == target) {
+                return true;
+            }
+            if (nums[mid] > nums[start]) {
+                if (nums[mid] >= target && target >= nums[start]) {
+                    end = mid;
+                } else {
+                    start = mid;
+                }
+            } else if (nums[mid] < nums[start]) {
+                if (nums[mid] <= target && target <= nums[end]) {
+                    start = mid;
+                } else {
+                    end = mid;
+                }
+            } else {
+                start++;
+            }
+        }
+        if (nums[start] == target || nums[end] == target) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * LeetCode.82 删除排序链表中的重复元素II
+     * 给定一个排序链表，删除所有含有重复数字的节点，只保留原始链表中 没有重复出现 的数字。
+     * <p>
+     * 示例 1:
+     * 输入: 1->2->3->3->4->4->5
+     * 输出: 1->2->5
+     * <p>
+     * 示例 2:
+     * 输入: 1->1->1->2->3
+     * 输出: 2->3
+     *
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        /*
+            三指针。realNode是最后的答案。每次对比curNode的值和前一个，后一个比。若
+            不相同则加到realNode中，同时preNode和curNode后移。如果有相同的，不加到realNode
+            中，preNode和curNode后移。
+         */
+        if (head == null) {
+            return null;
+        }
+        ListNode dummy = new ListNode(0);
+        ListNode curNode = head;
+        ListNode preNode = dummy;
+        ListNode realNode = dummy;
+        while (curNode != null) {
+            if ((preNode == dummy || preNode.val != curNode.val) &&
+                    (curNode.next == null || curNode.val != curNode.next.val)) {
+                realNode.next = curNode;
+                realNode = curNode;
+            }
+            preNode = curNode;
+            curNode = curNode.next;
+            preNode.next = null;
+        }
+        return dummy.next;
     }
 
     /**
