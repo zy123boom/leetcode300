@@ -2101,6 +2101,64 @@ public class Main {
     }
 
     /**
+     * LeetCode.86 分隔链表
+     * 给定一个链表和一个特定值 x，对链表进行分隔，使得所有小于 x 的节点都在大于或等于 x 的节点之前。
+     * <p>
+     * 你应当保留两个分区中每个节点的初始相对位置。
+     * <p>
+     * 示例:
+     * 输入: head = 1->4->3->2->5->2, x = 3
+     * 输出: 1->2->2->4->3->5
+     *
+     * @param head
+     * @param x
+     * @return
+     */
+    public ListNode partition(ListNode head, int x) {
+        /*
+            三指针，left表示分界线，左边的小于x，右边的大于等于x。
+            curr是当前处理的指针，prev是前一个指针。
+            改变链表的步骤：(在纸上画图可以帮助理解)
+            1.让prev.next = cur.next
+            2.让curr.next = left.next
+            3.让left.next = cur
+
+            特殊情况，当prev和left一样时，若curr.val < x，直接移动三个指针。
+            若curr.val >= x，移动prev和curr，left不变。
+         */
+        if (head == null) {
+            return null;
+        }
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode left = dummy;
+        ListNode curr = head;
+        ListNode prev = dummy;
+        while (curr != null) {
+            // 特殊情况
+            if (prev == left) {
+                if (curr.val < x) {
+                    left = left.next;
+                }
+                prev = curr;
+                curr = curr.next;
+            } else {
+                if (curr.val >= x) {
+                    prev = curr;
+                    curr = curr.next;
+                } else {
+                    prev.next = curr.next;
+                    curr.next = left.next;
+                    left.next = curr;
+                    left = left.next;
+                    curr = prev.next;
+                }
+            }
+        }
+        return dummy.next;
+    }
+
+    /**
      * LeetCode.90 子集II
      * 给定一个可能包含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）。
      * <p>
