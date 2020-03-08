@@ -2234,6 +2234,59 @@ public class Main {
     }
 
     /**
+     * LeetCode.91 解码方法
+     * 一条包含字母 A-Z 的消息通过以下方式进行了编码：
+     * 'A' -> 1
+     * 'B' -> 2
+     * ...
+     * 'Z' -> 26
+     * <p>
+     * 给定一个只包含数字的非空字符串，请计算解码方法的总数。
+     * <p>
+     * 示例 1:
+     * 输入: "12"
+     * 输出: 2
+     * 解释: 它可以解码为 "AB"（1 2）或者 "L"（12）。
+     * <p>
+     * 示例 2:
+     * 输入: "226"
+     * 输出: 3
+     * 解释: 它可以解码为 "BZ" (2 26), "VF" (22 6), 或者 "BBF" (2 2 6) 。
+     *
+     * @param s
+     * @return
+     */
+    public int numDecodings(String s) {
+        /*
+            dp[i]:前0~i个字符作为前缀字符串，所有的解码方式有多少种
+            init: dp[0] = 1
+            状态转移方程：dp[i] = dp[i] + dp[i - 1]，当为两位数，在原有基础上
+            dp[i] += dp[i - 2]
+            return: dp[s.length() - 1]
+         */
+        int[] dp = new int[s.length()];
+        if (s.charAt(0) == '0') {
+            return 0;
+        }
+        dp[0] = 1;
+        for (int i = 1; i < s.length(); i++) {
+            // 保证每一位没有0
+            if (s.charAt(i) != '0') {
+                dp[i] += dp[i - 1];
+            }
+            if (s.charAt(i - 1) == '1' || (s.charAt(i - 1) == '2' && s.charAt(i) <= '6')) {
+                // 两位数，十几/二十几的情况
+                if (i - 2 >= 0) {
+                    dp[i] += dp[i - 2];
+                } else {
+                    dp[i]++;
+                }
+            }
+        }
+        return dp[s.length() - 1];
+    }
+
+    /**
      * LeetCode.146 LRU缓存机制
      * <p>
      * 运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作：
