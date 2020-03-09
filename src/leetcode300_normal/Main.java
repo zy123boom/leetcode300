@@ -2287,6 +2287,56 @@ public class Main {
     }
 
     /**
+     * LeetCode.92 反转链表II
+     * 反转从位置 m 到 n 的链表。请使用一趟扫描完成反转。
+     * <p>
+     * 说明:
+     * 1 ≤ m ≤ n ≤ 链表长度。
+     * <p>
+     * 示例:
+     * 输入: 1->2->3->4->5->NULL, m = 2, n = 4
+     * 输出: 1->4->3->2->5->NULL
+     *
+     * @param head
+     * @param m
+     * @param n
+     * @return
+     */
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        /*
+            根据m和n分成三段：m之前的，m~n的，n之后的
+         */
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        // 第一段的最后一个节点
+        ListNode first = dummy;
+        for (int i = 1; i < m; i++) {
+            first = first.next;
+        }
+        // 第二段的最后一个节点。翻转之前是first.next指的是第二段的第一个，翻转以后
+        // 就是第二段的最后一个了
+        ListNode second = first.next;
+        if (second == null) {
+            return dummy.next;
+        }
+        // 第二段的第一个节点，翻转之前是最后一个节点。翻转后就是第一个节点
+        ListNode left = second;
+        // 第三段的第一个节点
+        ListNode right = left.next;
+
+        // 翻转
+        for (int i = m; i < n; i++) {
+            ListNode next = right.next;
+            right.next = left;
+            left = right;
+            right = next;
+        }
+        first.next = left;
+        second.next = right;
+        return dummy.next;
+    }
+
+    /**
      * LeetCode.146 LRU缓存机制
      * <p>
      * 运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作：
