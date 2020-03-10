@@ -2337,6 +2337,74 @@ public class Main {
     }
 
     /**
+     * LeetCode.93 复原IP地址
+     * 给定一个只包含数字的字符串，复原它并返回所有可能的 IP 地址格式。
+     * <p>
+     * 示例:
+     * 输入: "25525511135"
+     * 输出: ["255.255.11.135", "255.255.111.35"]
+     *
+     * @param s
+     * @return
+     */
+    public List<String> restoreIpAddresses(String s) {
+        //TODO 不能通过100%，有问题
+        List<String> res = new ArrayList<>();
+        if (s == null || s.length() == 0) {
+            return res;
+        }
+        // 根据.所分成的段
+        List<String> segment = new ArrayList<>();
+        dfs(s, 0, res, segment);
+        return res;
+    }
+
+    /**
+     * 93题帮助函数
+     *
+     * @param s
+     * @param start
+     * @param res
+     * @param segment
+     */
+    private void dfs(String s, int start, List<String> res, List<String> segment) {
+        if (start == s.length()) {
+            // 合法
+            if (segment.size() == 4) {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < segment.size(); i++) {
+                    sb.append(segment.get(i));
+                    if (i != segment.size() - 1) {
+                        sb.append('.');
+                    }
+                }
+                res.add(sb.toString());
+            }
+            return;
+        } else {
+            // 两个点之间只能有小于等于3位的数
+            if (segment.size() >= 4) {
+                return;
+            }
+            for (int i = start; i < s.length() && i < start + 3; i++) {
+                String str = s.substring(start, i + 1);
+                // 不能以0开头，且长度大于1的话，非法
+                if (str.charAt(0) == '0' && str.length() > 1) {
+                    break;
+                }
+                int num = Integer.parseInt(str);
+                if (num > 0 && num <= 255) {
+                    segment.add(str);
+                    dfs(s, i + 1, res, segment);
+                    segment.remove(segment.size() - 1);
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
      * LeetCode.146 LRU缓存机制
      * <p>
      * 运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作：
