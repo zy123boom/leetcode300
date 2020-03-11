@@ -87,6 +87,62 @@ public class Main {
     }
 
     /**
+     * LeetCode.14 最长公共前缀
+     * <p>
+     * 编写一个函数来查找字符串数组中的最长公共前缀。
+     * 如果不存在公共前缀，返回空字符串 ""。
+     * <p>
+     * 示例 1:
+     * 输入: ["flower","flow","flight"]
+     * 输出: "fl"
+     * <p>
+     * 示例 2:
+     * 输入: ["dog","racecar","car"]
+     * 输出: ""
+     * 解释: 输入不存在公共前缀。
+     *
+     * @param strs
+     * @return
+     */
+    public String longestCommonPrefix(String[] strs) {
+        /*
+            先找到字符串数组中最短的字符串。然后让这个字符串跟别的字符串
+            比较，然后不断的缩短前缀。
+         */
+        if (strs == null || strs.length == 0) {
+            return "";
+        }
+        if (strs.length == 1) {
+            return strs[0];
+        }
+        int minLen = Integer.MAX_VALUE;
+        String res = "";
+        for (String str : strs) {
+            if (str.length() < minLen) {
+                minLen = str.length();
+                res = str;
+            }
+        }
+        while (res.length() > 0) {
+            // 标志是否找到
+            boolean flag = true;
+            for (String str : strs) {
+                // 不匹配
+                if (!str.substring(0, minLen).equals(res)) {
+                    minLen--;
+                    res = str.substring(0, minLen);
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                return res;
+            }
+        }
+        return res;
+    }
+
+    /**
      * Leetcode.20 有效的括号
      * 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串，判断字符串是否有效。
      * <p>
