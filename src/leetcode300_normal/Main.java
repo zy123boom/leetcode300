@@ -2430,6 +2430,101 @@ public class Main {
     }
 
     /**
+     * LeetCode.95 不同的二叉搜索树II
+     * <p>
+     * 输入: 3
+     * 输出:
+     * [
+     *   [1,null,3,2],
+     *   [3,2,null,1],
+     *   [3,1,null,null,2],
+     *   [2,1,3],
+     *   [1,null,2,null,3]
+     * ]
+     * 解释:
+     * 以上的输出对应以下 5 种不同结构的二叉搜索树：
+     * <p>
+     * 1          3     3      2      1
+     * \        /     /       / \      \
+     * 3      2     1        1   3      2
+     * /     /       \                   \
+     * 2    1         2                   3
+     *
+     * @param n
+     * @return
+     */
+    public List<TreeNode> generateTrees(int n) {
+        List<TreeNode> res = new ArrayList<>();
+        if (n == 0) {
+            return res;
+        }
+        return helper(1, n);
+    }
+
+    /**
+     * 95题帮助函数
+     *
+     * @param left
+     * @param right
+     */
+    private List<TreeNode> helper(int left, int right) {
+        List<TreeNode> res = new ArrayList<>();
+        if (left > right) {
+            res.add(null);
+            return res;
+        }
+        for (int i = left; i <= right; i++) {
+            List<TreeNode> leftAll = helper(left, i - 1);
+            List<TreeNode> rightAll = helper(i + 1, right);
+            for (TreeNode l : leftAll) {
+                for (TreeNode r : rightAll) {
+                    TreeNode cur = new TreeNode(i);
+                    cur.left = l;
+                    cur.right = r;
+                    res.add(cur);
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * LeetCode.96 不同的二叉搜索树
+     * 给定一个整数 n，求以 1 ... n 为节点组成的二叉搜索树有多少种？
+     * <p>
+     * 示例:
+     * 输入: 3
+     * 输出: 5
+     * 解释:
+     * 给定 n = 3, 一共有 5 种不同结构的二叉搜索树:
+     * <p>
+     * 1         3       3      2      1
+     * \       /       /      / \      \
+     * 3      2       1      1   3      2
+     * /     /       \                  \
+     * 2     1        2                  3
+     *
+     * @param n
+     * @return
+     */
+    public int numTrees(int n) {
+        /*
+            动态规划。dp[n]: 有n个节点，能组成多少种二叉搜索树
+            F(i,n): 以i为根的不同二叉搜索树个数(1 <= i <= n)。
+            dp[n] = ∑(i from 1 to n) dp[i - 1] * dp[n - i]
+         */
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                dp[i] += dp[j - 1] * dp[i - j];
+            }
+        }
+        return dp[n];
+    }
+
+    /**
      * LeetCode.146 LRU缓存机制
      * <p>
      * 运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作：
