@@ -2509,8 +2509,11 @@ public class Main {
      */
     public int numTrees(int n) {
         /*
-            动态规划。dp[n]: 有n个节点，能组成多少种二叉搜索树
+            动态规划。
+            dp[n]: 有n个节点，能组成多少种二叉搜索树
             F(i,n): 以i为根的不同二叉搜索树个数(1 <= i <= n)。
+            dp[n] = ∑(i from 1 to n) F(i, n)
+            F(i,n) = dp[i - 1] * dp[n - i]
             dp[n] = ∑(i from 1 to n) dp[i - 1] * dp[n - i]
          */
         int[] dp = new int[n + 1];
@@ -2522,6 +2525,131 @@ public class Main {
             }
         }
         return dp[n];
+    }
+
+    /**
+     * LeetCode.102 二叉树的层次遍历
+     * 给定一个二叉树，返回其按层次遍历的节点值。 （即逐层地，从左到右访问所有节点）。
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        /*
+         *   思路：利用队列（Queue）先进先出特性，将本层出队列，下一层入队列
+         *       eg:    3
+         *             / \
+         *            9  20
+         *           /\
+         *          15 7
+         *
+         *  （第一回合）
+         *
+         * 先将根节点root入队，此时队列只有3，长度为1
+         * 将3出队并放入第一层List，判断3的left,right是否为空，不为空就按顺序从左到右入队。
+         * 第一层为[3]
+         *
+         * （第二回合）
+         * 此时Queue长度为2，将Queue前两个节点出队
+         * 9出队，放入第二层List，然后判断9的左右节点，如同（第一回合）的步骤2，没有便不需要入队
+         * 20出队，放入第二层List，然后将它的left15,right7入队。
+         * 此时第二层为[9,20]，且当前Queue为[15,17]，为下一回合做准备
+         *
+         * （第三回合）
+         * 此时Queue长度为2，将前2个节点出队
+         * 出队时发现两个节点都没有子节点，故本轮结束第三层为[15,7]，Queue为空
+         * Queue为空，结束。最后结果
+         * [
+         * [3],
+         * [9,20],
+         * [15,7]
+         * ]
+         */
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        // 先将根节点入队
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            // 代表res的每一层
+            List<Integer> row = new ArrayList<>();
+            // 代表上一回合的长度
+            int length = queue.size();
+            while (length > 0) {
+                TreeNode temp = queue.poll();
+                if (temp.left != null) {
+                    queue.offer(temp.left);
+                }
+                if (temp.right != null) {
+                    queue.offer(temp.right);
+                }
+                row.add(temp.val);
+                length--;
+            }
+            // 循环后，将list加到结果中
+            res.add(row);
+        }
+        return res;
+    }
+
+    /**
+     * LeetCode.103 二叉树的锯齿形层次遍历
+     * 给定一个二叉树，返回其节点值的锯齿形层次遍历。（即先从左往右，再从右往左进行下一层遍历，
+     * 以此类推，层与层之间交替进行）。
+     *
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        /*
+            与层次遍历一样，当奇数行时进行reverse
+         */
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        int count = 0;
+        while (!queue.isEmpty()) {
+            List<Integer> row = new LinkedList<>();
+            int size = queue.size();
+            while (size > 0) {
+                TreeNode temp = queue.poll();
+                if (temp.left != null) {
+                    queue.add(temp.left);
+                }
+                if (temp.right != null) {
+                    queue.add(temp.right);
+                }
+                row.add(temp.val);
+                size--;
+            }
+            if (count % 2 == 1) {
+                reverse(row);
+            }
+            count++;
+            res.add(row);
+        }
+        return res;
+    }
+
+    /**
+     * 103题帮助函数
+     *
+     * @param row
+     */
+    private void reverse(List<Integer> row) {
+        int left = 0, right = row.size() - 1;
+        while (left < right) {
+            int temp = row.get(left);
+            row.set(left, row.get(right));
+            row.set(right, temp);
+            left++;
+            right--;
+        }
     }
 
     /**
