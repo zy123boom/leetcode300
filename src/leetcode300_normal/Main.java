@@ -2664,7 +2664,7 @@ public class Main {
      * 中序遍历 inorder = [9,3,15,20,7]
      * 返回如下的二叉树：
      * <p>
-     *  3
+     * 3
      * / \
      * 9  20
      * /  \
@@ -2684,8 +2684,8 @@ public class Main {
      * @param preorder
      * @param inorder
      * @param preStart 先序开始的位置（根节点）
-     * @param inStart 中序开始的位置
-     * @param inEnd 中序结束的位置
+     * @param inStart  中序开始的位置
+     * @param inEnd    中序结束的位置
      */
     private TreeNode helper(int[] preorder, int[] inorder, int preStart, int inStart, int inEnd) {
         if (inStart > inEnd) {
@@ -2706,6 +2706,66 @@ public class Main {
         // 递归的构建左子树和右子树
         TreeNode left = helper(preorder, inorder, preStart + 1, inStart, inIndex - 1);
         TreeNode right = helper(preorder, inorder, preStart + inIndex - inStart + 1, inIndex + 1, inEnd);
+
+        current.left = left;
+        current.right = right;
+        return current;
+    }
+
+    /**
+     * LeetCode.106 从中序与后序遍历序列构造二叉树
+     * <p>
+     * 根据一棵树的中序遍历与后序遍历构造二叉树。
+     * 注意:
+     * 你可以假设树中没有重复的元素。
+     * <p>
+     * 例如，给出
+     * 中序遍历 inorder = [9,3,15,20,7]
+     * 后序遍历 postorder = [9,15,7,20,3]
+     * 返回如下的二叉树：
+     * <p>
+     *  3
+     * / \
+     * 9  20
+     * /  \
+     * 15   7
+     *
+     * @param inorder
+     * @param postorder
+     * @return
+     */
+    public TreeNode buildTree2(int[] inorder, int[] postorder) {
+        return helper2(inorder, postorder, postorder.length - 1, 0, inorder.length - 1);
+    }
+
+    /**
+     * 106题帮助函数
+     *
+     * @param inorder
+     * @param postorder
+     * @param postEnd
+     * @param inStart
+     * @param inEnd
+     * @return
+     */
+    private TreeNode helper2(int[] inorder, int[] postorder, int postEnd, int inStart, int inEnd) {
+        if (inStart > inEnd) {
+            return null;
+        }
+
+        int currentVal = postorder[postEnd];
+        TreeNode current = new TreeNode(currentVal);
+
+        // 找到根节点在中序遍历中的位置
+        int inIndex = 0;
+        for (int i = inStart; i <= inEnd; i++) {
+            if (inorder[i] == currentVal) {
+                inIndex = i;
+            }
+        }
+
+        TreeNode left = helper2(inorder, postorder, postEnd - (inEnd - inIndex) - 1, inStart, inIndex - 1);
+        TreeNode right = helper2(inorder, postorder, postEnd - 1, inIndex + 1, inEnd);
 
         current.left = left;
         current.right = right;
