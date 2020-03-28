@@ -2782,8 +2782,8 @@ public class Main {
      * 给定的有序链表： [-10, -3, 0, 5, 9]
      * 一个可能的答案是：[0, -3, 9, -10, null, 5], 它可以表示下面这个高度平衡二叉搜索树：
      * <p>
-     *    0
-     *   / \
+     * 0
+     * / \
      * -3   9
      * /   /
      * -10  5
@@ -2826,6 +2826,72 @@ public class Main {
         current.left = helper(head, slow);
         current.right = helper(slow.next, tail);
         return current;
+    }
+
+    /**
+     * LeetCode.113 路径总和II
+     * <p>
+     * 给定一个二叉树和一个目标和，找到所有从根节点到叶子节点路径总和等于给定目标和的路径。
+     * 说明: 叶子节点是指没有子节点的节点。
+     * <p>
+     * 示例:
+     * 给定如下二叉树，以及目标和 sum = 22，
+     * <p>
+     *       5
+     *      / \
+     *    4    8
+     *   /    / \
+     *  11  13  4
+     * /  \    / \
+     * 7   2  5   1
+     * <p>
+     * 返回:
+     * [
+     * [5,4,11,2],
+     * [5,8,4,5]
+     * ]
+     *
+     * @param root
+     * @param sum
+     * @return
+     */
+    public List<List<Integer>> pathSum(TreeNode root, int sum) {
+        /*
+            类似路径总和I，使用dfs回溯法。首先将根节点加到结果中，然后递归的
+            考虑左子树和右子树。考察左子树时让sum -= root.val进行考察
+         */
+        List<List<Integer>> res = new ArrayList<>();
+        helper(root, sum, res, new ArrayList<>());
+        return res;
+    }
+
+    /**
+     * 113题帮助函数
+     *
+     * @param root
+     * @param sum
+     * @param res
+     * @param curr
+     */
+    private void helper(TreeNode root, int sum, List<List<Integer>> res, List<Integer> curr) {
+        // base case 1
+        if (root == null) {
+            return;
+        }
+
+        curr.add(root.val);
+
+        // base case 2，左右子树为空且根节点值为sum，可以结束
+        if (root.left == null && root.right == null && sum == root.val) {
+            res.add(new ArrayList<>(curr));
+            curr.remove(curr.size() - 1);
+            return;
+        }
+
+        // 探索左子树和右子树
+        helper(root.left, sum - root.val, res, curr);
+        helper(root.right, sum - root.val, res, curr);
+        curr.remove(curr.size() - 1);
     }
 
     /**
