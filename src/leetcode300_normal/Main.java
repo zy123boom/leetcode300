@@ -2895,6 +2895,51 @@ public class Main {
     }
 
     /**
+     * LeetCode.114 二叉树展开为链表
+     * <p>
+     * 给定一个二叉树，原地将它展开为链表。
+     * <p>
+     * 例如，给定二叉树
+     *     1
+     *    / \
+     *   2   5
+     *  / \   \
+     * 3   4   6
+     * <p>
+     * 将其展开为：
+     * 1
+     *  \
+     *   2
+     *    \
+     *     3
+     *      \
+     *       4
+     *        \
+     *         5
+     *          \
+     *           6
+     *
+     * @param root
+     */
+    private TreeNode prev = null; // 下一个的状态
+
+    public void flatten(TreeNode root) {
+        /*
+            让左子树为空，全部放到右子树。然后先看右子树再看左子树。让右子树的头节点连到
+            左子树。
+         */
+        if (root == null) {
+            return;
+        }
+        // 先右后左
+        flatten(root.right);
+        flatten(root.left);
+        root.right = prev;
+        root.left = null;
+        prev = root;
+    }
+
+    /**
      * LeetCode.146 LRU缓存机制
      * <p>
      * 运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作：
