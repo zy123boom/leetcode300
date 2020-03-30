@@ -3023,6 +3023,45 @@ public class Main {
     }
 
     /**
+     * LeetCode.120 三角形最小路径和
+     * <p>
+     * 给定一个三角形，找出自顶向下的最小路径和。每一步只能移动到下一行中相邻的结点上。
+     * <p>
+     * 例如，给定三角形：
+     * [
+     * [2],
+     * [3,4],
+     * [6,5,7],
+     * [4,1,8,3]
+     * ]
+     * 自顶向下的最小路径和为 11（即，2 + 3 + 5 + 1 = 11）。
+     * <p>
+     * 说明：
+     * 如果你可以只使用 O(n) 的额外空间（n 为三角形的总行数）来解决这个问题，那么你的算法会很加分。
+     *
+     * @param triangle
+     * @return
+     */
+    public int minimumTotal(List<List<Integer>> triangle) {
+        /*
+            从下往上算。最后一层 4 1 8 3。6位置上的数的结果是4和1取最小加上6，以此类推。
+            为了达到O(n)的空间复杂度，每算完一层覆盖掉。最后返回的是左上角即dp[0]
+         */
+        if (triangle == null || triangle.size() == 0) {
+            return 0;
+        }
+        int m = triangle.size();
+        int[] dp = new int[m + 1];
+        for (int i = m - 1; i >= 0; i--) {
+            List<Integer> line = triangle.get(i);
+            for (int j = 0; j < line.size(); j++) {
+                dp[j] = Math.min(dp[j], dp[j + 1]) + line.get(j);
+            }
+        }
+        return dp[0];
+    }
+
+    /**
      * LeetCode.146 LRU缓存机制
      * <p>
      * 运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作：
