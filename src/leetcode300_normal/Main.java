@@ -3072,8 +3072,8 @@ public class Main {
      * <p>
      * 示例 1:
      * 输入: [1,2,3]
-     *   1
-     *  / \
+     * 1
+     * / \
      * 2   3
      * 输出: 25
      * 解释:
@@ -3083,9 +3083,9 @@ public class Main {
      * <p>
      * 示例 2:
      * 输入: [4,9,0,5,1]
-     *     4
-     *    / \
-     *   9   0
+     * 4
+     * / \
+     * 9   0
      *  / \
      * 5   1
      * 输出: 1026
@@ -3099,6 +3099,7 @@ public class Main {
      * @return
      */
     private int sum = 0;
+
     public int sumNumbers(TreeNode root) {
         if (root == null) {
             return 0;
@@ -3126,6 +3127,75 @@ public class Main {
         if (root.right != null) {
             helper(root.right, curSum * 10 + root.right.val);
         }
+    }
+
+    /**
+     * LeetCode.131 分割回文串
+     * <p>
+     * 给定一个字符串 s，将 s 分割成一些子串，使每个子串都是回文串。
+     * 返回 s 所有可能的分割方案。
+     * <p>
+     * 示例:
+     * 输入: "aab"
+     * 输出:
+     * [
+     * ["aa","b"],
+     * ["a","a","b"]
+     * ]
+     *
+     * @param s
+     * @return
+     */
+    public List<List<String>> partition(String s) {
+        List<List<String>> res = new ArrayList<>();
+        dfs(s, res, new ArrayList<>());
+        return res;
+    }
+
+    /**
+     * 131帮助函数
+     *
+     * @param s
+     * @param res
+     * @param curr
+     */
+    private void dfs(String s, List<List<String>> res, List<String> curr) {
+        // String开始的index通过dfs递归中的参数变化实现
+        // base case - 由于不停的被分割子串，当字符串长度为0时无法分割子串，return
+        if (s.length() == 0) {
+            res.add(new ArrayList<>(curr));
+            return;
+        }
+
+        // i代表子串的长度
+        for (int i = 1; i <= s.length(); i++) {
+            if (isPalindrome(s, 0, i)) {
+                curr.add(s.substring(0, i));
+                dfs(s.substring(i), res, curr);
+                curr.remove(curr.size() - 1);
+            }
+        }
+    }
+
+    /**
+     * 131题帮助函数
+     * 判断字符串是否回文
+     *
+     * @param s
+     * @param start
+     * @param length
+     * @return
+     */
+    private boolean isPalindrome(String s, int start, int length) {
+        int end = start + length - 1;
+        while (start < end) {
+            if (s.charAt(start) != s.charAt(end)) {
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
     }
 
     /**
