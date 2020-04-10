@@ -3375,6 +3375,55 @@ public class Main {
     }
 
     /**
+     * LeetCode.139 单词拆分
+     * <p>
+     * 给定一个非空字符串 s 和一个包含非空单词列表的字典 wordDict，判定 s 是否可以被空格拆分为
+     * 一个或多个在字典中出现的单词。
+     * <p>
+     * 说明：
+     * 拆分时可以重复使用字典中的单词。
+     * 你可以假设字典中没有重复的单词。
+     * <p>
+     * 示例 1：
+     * 输入: s = "leetcode", wordDict = ["leet", "code"]
+     * 输出: true
+     * 解释: 返回 true 因为 "leetcode" 可以被拆分成 "leet code"。
+     * <p>
+     * 示例 2：
+     * 输入: s = "applepenapple", wordDict = ["apple", "pen"]
+     * 输出: true
+     * 解释: 返回 true 因为 "applepenapple" 可以被拆分成 "apple pen apple"。
+     *      注意你可以重复使用字典中的单词。
+     * <p>
+     * 示例 3：
+     * 输入: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
+     * 输出: false
+     *
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public boolean wordBreak(String s, List<String> wordDict) {
+        /*
+            dp[i]：前i个字符组成的串是否可以被拆分
+            将字符串分成两段，0~j和j到i。0~j满足就是dp[j]，j到i就是取子串，看是否在词库里。
+         */
+        int n = s.length();
+        boolean[] dp = new boolean[n + 1];
+        Set<String> set = new HashSet<>(wordDict);
+        dp[0] = true;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && set.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[n];
+    }
+
+    /**
      * LeetCode.146 LRU缓存机制
      * <p>
      * 运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作：
