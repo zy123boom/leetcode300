@@ -3461,6 +3461,75 @@ public class Main {
     }
 
     /**
+     * LeetCode.143 重排链表
+     * <p>
+     * 给定一个单链表 L：L0→L1→…→Ln-1→Ln ，
+     * 将其重新排列后变为： L0→Ln→L1→Ln-1→L2→Ln-2→…
+     * 你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
+     * <p>
+     * 示例 1:
+     * 给定链表 1->2->3->4, 重新排列为 1->4->2->3.
+     * <p>
+     * 示例 2:
+     * 给定链表 1->2->3->4->5, 重新排列为 1->5->2->4->3.
+     *
+     * @param head
+     */
+    public void reorderList(ListNode head) {
+        /*
+            由题意知，最后要的结果是每次首尾节点相连组成的链表。结束的条件是直到
+            到达了原来链表的中点。
+            eg: 1->2->3->4->5->6
+            1.找到链表中点
+            2.根据中点将链表分成两部分，翻转后半部分，断掉前后部分的连接。
+             1->2->3
+             6->5->4
+            3.依次连接。1->6->2->5->3->4
+         */
+        if (head == null) {
+            return;
+        }
+        // 1.
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        // 2.
+        ListNode newHead = slow.next;
+        slow.next = null;
+        newHead = reverseList(newHead);
+        // 3.
+        while (newHead != null) {
+            ListNode temp = newHead.next;
+            newHead.next = head.next;
+            head.next = newHead;
+            head = newHead.next;
+            newHead = temp;
+        }
+    }
+
+    /**
+     * 143题帮助函数，反转链表
+     *
+     * @param head
+     * @return
+     */
+    private ListNode reverseList(ListNode head) {
+        ListNode pre = null;
+        ListNode curr = head;
+        while (curr != null) {
+            ListNode next = curr.next;
+            curr.next = pre;
+            pre = curr;
+            curr = next;
+        }
+        return pre;
+    }
+
+
+    /**
      * LeetCode.146 LRU缓存机制
      * <p>
      * 运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作：
