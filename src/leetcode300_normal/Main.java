@@ -3424,6 +3424,43 @@ public class Main {
     }
 
     /**
+     * LeetCode.142 环形链表II
+     * <p>
+     * 给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+     * 为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。
+     * 如果 pos 是 -1，则在该链表中没有环。
+     * <p>
+     * 说明：不允许修改给定的链表。
+     *
+     * @param head
+     * @return
+     */
+    public ListNode detectCycle(ListNode head) {
+        /*
+            快慢指针判环，如果有环，则让fast指针回到开头，变为每次走一步，
+            然后两个指针一起走，相遇处就是入环节点。
+         */
+        if (head == null || head.next == null || head.next.next == null) {
+            return null;
+        }
+        ListNode fast = head.next.next;
+        ListNode slow = head.next;
+        while (slow != fast) {
+            if (fast.next == null || fast.next.next == null) {
+                return null;
+            }
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        fast = head;
+        while (slow != fast) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return slow;
+    }
+
+    /**
      * LeetCode.146 LRU缓存机制
      * <p>
      * 运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作：
