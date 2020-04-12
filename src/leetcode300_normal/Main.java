@@ -3528,6 +3528,36 @@ public class Main {
         return pre;
     }
 
+    /**
+     * LeetCode.144 二叉树的前序遍历
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> preorderTraversal(TreeNode root) {
+        /*
+            设一个栈，让根节点进栈。然后出栈顶元素打印该元素，然后看该节点
+            有没有左右孩子，先看右，如果有右，压入栈。左边同理。
+         */
+        List<Integer> res = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        stack.add(root);
+        while (!stack.isEmpty()) {
+            root = stack.pop();
+            res.add(root.val);
+            if (root.right != null) {
+                stack.push(root.right);
+            }
+            if (root.left != null) {
+                stack.push(root.left);
+            }
+        }
+        return res;
+    }
+
 
     /**
      * LeetCode.146 LRU缓存机制
@@ -3556,26 +3586,89 @@ public class Main {
      * cache.get(3);       // 返回  3
      * cache.get(4);       // 返回  4
      */
-    class LRUCache extends LinkedHashMap<Integer, Integer> {
+    class LRUCache {
+        /*
+            做法一：让类继承LinkedHashMap，get调用super.getOrDefault，put调用super.put。
+            最后加上重写后的removeEldestEntry方法，返回语句为size() > capacity。
+            此处使用做法二：双向链表+HashMap
+         */
+        class LinkNode {
+            int key;
+            int val;
+            LinkNode prev;
+            LinkNode next;
+            public LinkNode(int key, int val) {
+                this.key = key;
+                this.val = val;
+            }
+        }
+
         private int capacity;
+        Map<Integer, LinkNode> map = new HashMap<>();
+        // 双向链表的头和尾
+        LinkNode head = new LinkNode(0, 0);
+        LinkNode tail = new LinkNode(0, 0);
 
         public LRUCache(int capacity) {
-            super(capacity, 0.75F, true);
             this.capacity = capacity;
+            head.next = tail;
+            tail.prev = head;
         }
 
         public int get(int key) {
-            return super.getOrDefault(key, -1);
+            if (map.containsKey(key)) {
+                LinkNode node = map.get(key);
+                // 该节点已被用到，所以放到第一个
+                moveNodeToFirst(node);
+                return node.val;
+            } else {
+                return -1;
+            }
         }
 
         public void put(int key, int value) {
-            super.put(key, value);
+            // 如果当前key不存在于map中
+            if (!map.containsKey(key)) {
+                if (map.size() == capacity) {
+                    // 删除最后一个节点
+                    deleteLastNode();
+                }
+                // 头节点后的第一个节点
+                LinkNode temp = head.next;
+                // 新的节点，这个节点要放在第一个的位置
+                LinkNode newNode = new LinkNode(key, value);
+                head.next = newNode;
+                newNode.prev = head;
+                newNode.next = temp;
+                temp.prev = newNode;
+                map.put(key, newNode);
+            } else {
+                // key存在的话，只是更新值，并且把节点放到第一个。
+                LinkNode node = map.get(key);
+                node.val = value;
+                moveNodeToFirst(node);
+            }
         }
 
-        @Override
-        protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
-            return size() > capacity;
+        private void deleteLastNode() {
+            LinkNode lastNode = tail.prev;
+            lastNode.prev.next = tail;
+            tail.prev = lastNode.prev;
+            map.remove(lastNode.key);
         }
+
+        private void moveNodeToFirst(LinkNode node) {
+            // 首先断开node的前后，然后让node前面的和后面的连上
+            node.prev.next = node.next;
+            node.next.prev = node.prev;
+            // 把node放到第一个
+            LinkNode temp = head.next;
+            head.next = node;
+            node.prev = head;
+            node.next = temp;
+            temp.prev = node;
+        }
+
     }
 }
 
