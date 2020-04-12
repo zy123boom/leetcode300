@@ -3597,6 +3597,7 @@ public class Main {
             int val;
             LinkNode prev;
             LinkNode next;
+
             public LinkNode(int key, int val) {
                 this.key = key;
                 this.val = val;
@@ -3668,7 +3669,146 @@ public class Main {
             node.next = temp;
             temp.prev = node;
         }
+    }
 
+    /**
+     * LeetCode.147 对链表进行插入排序
+     *
+     * @param head
+     * @return
+     */
+    public ListNode insertionSortList(ListNode head) {
+        ListNode nextNode = null;
+        ListNode currNode = head;
+        if (currNode == null) {
+            return head;
+        }
+        while (currNode.next != null) {
+            nextNode = currNode.next;
+            while (nextNode != null) {
+                if (currNode.val > nextNode.val) {
+                    int temp = currNode.val;
+                    currNode.val = nextNode.val;
+                    nextNode.val = temp;
+                }
+                nextNode = nextNode.next;
+            }
+            currNode = currNode.next;
+        }
+        return head;
+    }
+
+    /**
+     * LeetCode.148 排序链表
+     * <p>
+     * 在 O(n log n) 时间复杂度和常数级空间复杂度下，对链表进行排序。
+     * <p>
+     * 示例 1:
+     * 输入: 4->2->1->3
+     * 输出: 1->2->3->4
+     * <p>
+     * 示例 2:
+     * 输入: -1->5->3->4->0
+     * 输出: -1->0->3->4->5
+     *
+     * @param head
+     * @return
+     */
+    public ListNode sortList(ListNode head) {
+        /*
+            根据时空复杂度的要求，需要使用归并排序。
+            第一步，找到链表中点。
+            第二步，归并排序
+         */
+        return mergeSort(head);
+    }
+
+    /**
+     * 148题帮助函数，归并排序
+     *
+     * @param head
+     * @return
+     */
+    private ListNode mergeSort(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        // 1.找到链表中点
+        ListNode fast = dummy;
+        ListNode slow = dummy;
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        // 2.归并排序
+        ListNode head2 = slow.next;
+        slow.next = null;
+        head = mergeSort(head);
+        head2 = mergeSort(head2);
+        return merge(head, head2);
+    }
+
+    /**
+     * 148题帮助函数，归并
+     *
+     * @param head1
+     * @param head2
+     * @return
+     */
+    private ListNode merge(ListNode head1, ListNode head2) {
+        ListNode dummy = new ListNode(0);
+        ListNode curr = dummy;
+        while (head1 != null && head2 != null) {
+            if (head1.val < head2.val) {
+                curr.next = head1;
+                curr = curr.next;
+                head1 = head1.next;
+            } else {
+                curr.next = head2;
+                curr = curr.next;
+                head2 = head2.next;
+            }
+        }
+        if (head1 != null) {
+            curr.next = head1;
+        }
+        if (head2 != null) {
+            curr.next = head2;
+        }
+        return dummy.next;
+    }
+
+    /**
+     * LeetCode.150 逆波兰表达式求值
+     *
+     * @param tokens
+     * @return
+     */
+    public int evalRPN(String[] tokens) {
+        Stack<Integer> num = new Stack<>();
+        for (String token : tokens) {
+            switch (token) {
+                case "+":
+                    num.push(num.pop() + num.pop());
+                    break;
+                case "-":
+                    int sub = num.pop();
+                    num.push(num.pop() - sub);
+                    break;
+                case "*":
+                    num.push(num.pop() * num.pop());
+                    break;
+                case "/":
+                    int divisor = num.pop();
+                    num.push(num.pop() / divisor);
+                    break;
+                default:
+                    num.push(Integer.parseInt(token));
+            }
+        }
+        return num.pop();
     }
 }
 
