@@ -210,6 +210,30 @@ public class Main {
     }
 
     /**
+     * LeetCode.26 删除排序数组中的重复项
+     * <p>
+     * 给定一个排序数组，你需要在 原地 删除重复出现的元素，使得每个元素只出现一次，返回移除后
+     * 数组的新长度。
+     * 不要使用额外的数组空间，你必须在 原地 修改输入数组 并在使用 O(1) 额外空间的条件下完成
+     *
+     * @param nums
+     * @return
+     */
+    public int removeDuplicates(int[] nums) {
+        /*
+            双指针。当新的数字出现时，把新的数字的值给慢指针，然后两个指针往前走。否则只有快
+            指针往前走。最后返回慢指针所在的索引。
+         */
+        int slow = 1;
+        for (int fast = 1; fast < nums.length; fast++) {
+            if (nums[fast - 1] != nums[fast]) {
+                nums[slow++] = nums[fast];
+            }
+        }
+        return slow;
+    }
+
+    /**
      * leetCode.38  外观数列
      * 「外观数列」是一个整数序列，从数字 1 开始，序列中的每一项都是对前一项的描述。前五项如下：
      * <p>

@@ -2528,6 +2528,43 @@ public class Main {
     }
 
     /**
+     * LeetCode.98 验证二叉搜索树
+     * <p>
+     * 给定一个二叉树，判断其是否是一个有效的二叉搜索树。
+     * <p>
+     * 假设一个二叉搜索树具有如下特征：
+     * 节点的左子树只包含小于当前节点的数。
+     * 节点的右子树只包含大于当前节点的数。
+     * 所有左子树和右子树自身必须也是二叉搜索树。
+     *
+     * @param root
+     * @return
+     */
+    public boolean isValidBST(TreeNode root) {
+        /*
+            给定一个区间[min, max]，要保证root的值在这个区间之间，同时左右子树的值也要在
+            区间之间。递归去观察，每次更新区间。左子树的区间是(min, root.val - 1)。右子
+            树的区间是(root.val + 1, max)。
+         */
+        if (root == null) {
+            return true;
+        }
+        return helper(root, null, null);
+    }
+
+    private boolean helper(TreeNode root, Integer min, Integer max) {
+        if (root == null) {
+            return true;
+        }
+        if ((max != null && root.val >= max) || (min != null && root.val <= min)) {
+            return false;
+        }
+        boolean left = helper(root.left, min, root.val);
+        boolean right = helper(root.right, root.val, max);
+        return left && right;
+    }
+
+    /**
      * LeetCode.102 二叉树的层次遍历
      * 给定一个二叉树，返回其按层次遍历的节点值。 （即逐层地，从左到右访问所有节点）。
      *
@@ -3059,6 +3096,132 @@ public class Main {
             }
         }
         return dp[0];
+    }
+
+    /**
+     * LeetCode.127 单词接龙
+     * <p>
+     * 给定两个单词（beginWord 和 endWord）和一个字典，找到从 beginWord 到 endWord 的最短转换序列
+     * 的长度。转换需遵循如下规则：
+     * 每次转换只能改变一个字母。
+     * 转换过程中的中间单词必须是字典中的单词。
+     * <p>
+     * 说明:
+     * 如果不存在这样的转换序列，返回 0。
+     * 所有单词具有相同的长度。
+     * 所有单词只由小写字母组成。
+     * 字典中不存在重复的单词。
+     * 你可以假设 beginWord 和 endWord 是非空的，且二者不相同。
+     * <p>
+     * 示例 1:
+     * 输入:
+     * beginWord = "hit",
+     * endWord = "cog",
+     * wordList = ["hot","dot","dog","lot","log","cog"]
+     * 输出: 5
+     * 解释: 一个最短转换序列是 "hit" -> "hot" -> "dot" -> "dog" -> "cog",
+     * 返回它的长度 5。
+     * <p>
+     * 示例 2:
+     * 输入:
+     * beginWord = "hit"
+     * endWord = "cog"
+     * wordList = ["hot","dot","dog","lot","log"]
+     * 输出: 0
+     * 解释: endWord "cog" 不在字典中，所以无法进行转换。
+     *
+     * @param beginWord
+     * @param endWord
+     * @param wordList
+     * @return
+     */
+    Map<String, List<String>> map = new HashMap<>();
+
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        /*
+            此题考虑BFS。
+            构建一个Map，key是String, value是List<String>。value的含义是对应的key下一步
+            能变成哪些String。例如1下一步可以变成2,3,4,5。1就是key，
+            2,3,4,5组成的List就是value。
+         */
+        if (beginWord.equals(endWord)) {
+            return 0;
+        }
+        buildMap(wordList, beginWord);
+        // dfs
+        // 用来处理重复情况。例如1可以变成2，2又可以变成1，重复情况。
+        Set<String> doneSet = new HashSet<>();
+        Queue<String> queue = new LinkedList<>();
+
+        queue.offer(beginWord);
+        doneSet.add(beginWord);
+        int steps = 1;
+        while (queue.size() != 0) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                String curr = queue.poll();
+                // 找到了
+                if (curr.equals(endWord)) {
+                    return steps;
+                }
+                List<String> nextStrList = map.get(curr);
+                for (String nextStr : nextStrList) {
+                    if (!doneSet.contains(nextStr)) {
+                        queue.offer(nextStr);
+                        doneSet.add(nextStr);
+                    }
+                }
+            }
+            steps++;
+        }
+        return 0;
+    }
+
+    /**
+     * 127题帮助函数，构造Map
+     *
+     * @param wordList
+     * @param beginWord
+     */
+    private void buildMap(List<String> wordList, String beginWord) {
+        // 生成映射表
+        for (String str : wordList) {
+            List<String> nList = new LinkedList<>();
+            map.put(str, nList);
+            for (String next : wordList) {
+                if (diff(str, next) == 1) {
+                    map.get(str).add(next);
+                }
+            }
+        }
+        // 如果beginWord不存在，则也需要加到map里。
+        if (!map.containsKey(beginWord)) {
+            List<String> nList = new LinkedList<>();
+            map.put(beginWord, nList);
+            for (String next : wordList) {
+                if (diff(beginWord, next) == 1) {
+                    map.get(beginWord).add(next);
+                }
+            }
+        }
+    }
+
+    /**
+     * 127题帮助函数，构建map所用，求距离。
+     * 意思是两个字符串有几个字母不同
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    private int diff(String s, String t) {
+        int count = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) != t.charAt(i)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
