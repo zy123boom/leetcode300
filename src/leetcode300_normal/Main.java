@@ -2348,57 +2348,38 @@ public class Main {
      * @return
      */
     public List<String> restoreIpAddresses(String s) {
-        //TODO 不能通过100%，有问题
         List<String> res = new ArrayList<>();
-        if (s == null || s.length() == 0) {
+        if (s == null || s.length() == 0 || s.length() > 12) {
             return res;
         }
-        // 根据.所分成的段
-        List<String> segment = new ArrayList<>();
-        dfs(s, 0, res, segment);
+        helper(res, s, "", 0);
         return res;
     }
 
     /**
      * 93题帮助函数
      *
-     * @param s
-     * @param start
      * @param res
-     * @param segment
+     * @param s
+     * @param curr  当前状态下已经找到的部分，例如IP为xx.xxx.xx.xxx，curr可以前面的两个部分即xx.xxx
+     * @param field IP分成的段，例如xx.xxx.xx.xxx，分成四个段。
      */
-    private void dfs(String s, int start, List<String> res, List<String> segment) {
-        if (start == s.length()) {
-            // 合法
-            if (segment.size() == 4) {
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < segment.size(); i++) {
-                    sb.append(segment.get(i));
-                    if (i != segment.size() - 1) {
-                        sb.append('.');
-                    }
-                }
-                res.add(sb.toString());
-            }
+    private void helper(List<String> res, String s, String curr, int field) {
+        // base case
+        if (field == 4 && s.length() == 0) {
+            // 最后形成的IP是 .xx.xx.xx.xxx，所以要把第一个.去掉
+            res.add(curr.substring(1));
+        } else if (field == 4 ^ s.length() == 0) {
             return;
         } else {
-            // 两个点之间只能有小于等于3位的数
-            if (segment.size() >= 4) {
-                return;
-            }
-            for (int i = start; i < s.length() && i < start + 3; i++) {
-                String str = s.substring(start, i + 1);
-                // 不能以0开头，且长度大于1的话，非法
-                if (str.charAt(0) == '0' && str.length() > 1) {
-                    break;
-                }
-                int num = Integer.parseInt(str);
-                if (num > 0 && num <= 255) {
-                    segment.add(str);
-                    dfs(s, i + 1, res, segment);
-                    segment.remove(segment.size() - 1);
-                } else {
-                    break;
+            // IP的某一段只有一位数字，此处curr + "."就是最后生成的IP多一个.的原因
+            helper(res, s.substring(1), curr + "." + s.substring(0, 1), field + 1);
+            // IP的某一段有两位的情况，要满足每一段的第一个数不能是0，并且后面还有数字
+            if (s.charAt(0) != '0' && s.length() > 1) {
+                helper(res, s.substring(2), curr + "." + s.substring(0, 2), field + 1);
+                // IP的某一段有三位的情况，要满足这一段的数字不超过255.
+                if (s.length() > 2 && Integer.valueOf(s.substring(0, 3)) <= 255) {
+                    helper(res, s.substring(3), curr + "." + s.substring(0, 3), field + 1);
                 }
             }
         }
