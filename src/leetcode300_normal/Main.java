@@ -3954,6 +3954,77 @@ public class Main {
         }
         return num.pop();
     }
+
+    /**
+     * LeetCode.151 翻转字符串里的单词
+     * <p>
+     * 给定一个字符串，逐个翻转字符串中的每个单词。
+     * <p>
+     * 示例 1：
+     * 输入: "the sky is blue"
+     * 输出: "blue is sky the"
+     * <p>
+     * 示例 2：
+     * 输入: "  hello world!  "
+     * 输出: "world! hello"
+     * 解释: 输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。
+     * <p>
+     * 示例 3：
+     * 输入: "a good   example"
+     * 输出: "example good a"
+     * 解释: 如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。
+     *
+     * @param s
+     * @return
+     */
+    public String reverseWords(String s) {
+        s = s.trim();
+        List<String> list = Arrays.asList(s.split("\\s+"));
+        Collections.reverse(list);
+        return String.join(" ", list);
+    }
+
+    /**
+     * LeetCode.152 乘积最大子数组
+     * <p>
+     * 给你一个整数数组 nums ，请你找出数组中乘积最大的连续子数组（该子数组中至少包含一个数字）。
+     * <p>
+     * 示例 1:
+     * 输入: [2,3,-2,4]
+     * 输出: 6
+     * 解释: 子数组 [2,3] 有最大乘积 6。
+     * <p>
+     * 示例 2:
+     * 输入: [-2,0,-1]
+     * 输出: 0
+     * 解释: 结果不能为 2, 因为 [-2,-1] 不是子数组。
+     *
+     * @param nums
+     * @return
+     */
+    public int maxProduct(int[] nums) {
+        /*
+            类似53题最大子序列的和。由于是乘法，有可能出现两个负数相乘结果成了最大。
+            所以此处需要三个值，maxToCurr, minToCurr, max。
+            maxToCurr = max of {maxToCurr * num, minToCurr * num, num}
+            minToCurr = min of {maxToCurr * num, minToCurr * num, num}
+            max = max{maxToCurr, product}
+         */
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int maxToCurr = nums[0];
+        int minToCurr = nums[0];
+        int max = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int nextMax = maxToCurr * nums[i];
+            int nextMin = minToCurr * nums[i];
+            maxToCurr = Math.max(Math.max(nextMax, nextMin), nums[i]);
+            minToCurr = Math.min(Math.min(nextMax, nextMin), nums[i]);
+            max = Math.max(maxToCurr, max);
+        }
+        return max;
+    }
 }
 
 class TreeNode {
