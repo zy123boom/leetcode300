@@ -2721,9 +2721,9 @@ public class Main {
             }
         }
 
-        // 递归的构建左子树和右子树
+        // 递归的构建左子树和右子树.preStart = preStart + 右子树.size
         TreeNode left = helper(preorder, inorder, preStart + 1, inStart, inIndex - 1);
-        TreeNode right = helper(preorder, inorder, preStart + inIndex - inStart + 1, inIndex + 1, inEnd);
+        TreeNode right = helper(preorder, inorder, preStart + (inIndex - inStart + 1), inIndex + 1, inEnd);
 
         current.left = left;
         current.right = right;
