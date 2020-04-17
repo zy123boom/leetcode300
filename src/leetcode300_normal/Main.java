@@ -4122,6 +4122,77 @@ public class Main {
         }
         return 0;
     }
+
+    /**
+     * LeetCode.179 最大数
+     * <p>
+     * 给定一组非负整数，重新排列它们的顺序使之组成一个最大的整数。
+     * <p>
+     * 示例 1:
+     * 输入: [10,2]
+     * 输出: 210
+     * <p>
+     * 示例 2:
+     * 输入: [3,30,34,5,9]
+     * 输出: 9534330
+     * 说明: 输出结果可能非常大，所以你需要返回一个字符串而不是整数。
+     *
+     * @param nums
+     * @return
+     */
+    public String largestNumber(int[] nums) {
+        Integer[] n = new Integer[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            n[i] = nums[i];
+        }
+
+        Arrays.sort(n, (o1, o2) -> {
+            String str1 = o1 + "" + o2;
+            String str2 = o2 + "" + o1;
+            return str2.compareTo(str1);
+        });
+
+        StringBuilder sb = new StringBuilder();
+        for (Integer num : n) {
+            sb.append(num);
+        }
+
+        String res = sb.toString();
+        return res.charAt(0) == '0' ? "0" : res;
+    }
+
+    /**
+     * LeetCode.187 重复的DNA序列
+     * <p>
+     * 所有 DNA 都由一系列缩写为 A，C，G 和 T 的核苷酸组成，例如：“ACGAATTCCG”。在研究 DNA 时，识
+     * 别 DNA 中的重复序列有时会对研究非常有帮助。
+     * 编写一个函数来查找 DNA 分子中所有出现超过一次的 10 个字母长的序列（子串）。
+     * <p>
+     * 示例：
+     * 输入：s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT"
+     * 输出：["AAAAACCCCC", "CCCCCAAAAA"]
+     *
+     * @param s
+     * @return
+     */
+    public List<String> findRepeatedDnaSequences(String s) {
+        /*
+            重复串可以使用HashSet跟substring()方法
+            每次遍历将子串放到seen中，如果放入失败，表示seen集合中出现了这个子串，是重复的，
+            则加入到repeat中。
+         */
+        Set<String> seen = new HashSet<>();
+        Set<String> repeat = new HashSet<>();
+
+        for (int i = 0; i < s.length() - 9; i++) {
+            String temp = s.substring(i, i + 10);
+            if (!seen.add(temp)) {
+                repeat.add(temp);
+            }
+        }
+
+        return new ArrayList<>(repeat);
+    }
 }
 
 class TreeNode {
