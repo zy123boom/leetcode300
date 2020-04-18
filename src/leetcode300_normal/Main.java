@@ -4193,6 +4193,52 @@ public class Main {
 
         return new ArrayList<>(repeat);
     }
+
+    /**
+     * LeetCode.199 二叉树的右视图
+     * <p>
+     * 给定一棵二叉树，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
+     * <p>
+     * 示例:
+     * 输入: [1,2,3,null,5,null,4]
+     * 输出: [1, 3, 4]
+     * 解释:
+     * 1            <---
+     * /   \
+     * 2     3         <---
+     * \     \
+     * 5     4       <---
+     *
+     * @param root
+     * @return
+     */
+    public List<Integer> rightSideView(TreeNode root) {
+        // 层次遍历，结果集只存最后的值。
+        List<Integer> res = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            Queue<TreeNode> nextLevel = new LinkedList<>();
+            // 最后一个的值
+            int lastVal = 0;
+            while (!queue.isEmpty()) {
+                TreeNode cur = queue.poll();
+                lastVal = cur.val;
+                if (cur.left != null) {
+                    nextLevel.offer(cur.left);
+                }
+                if (cur.right != null) {
+                    nextLevel.offer(cur.right);
+                }
+            }
+            res.add(lastVal);
+            queue.addAll(nextLevel);
+        }
+        return res;
+    }
 }
 
 class TreeNode {
