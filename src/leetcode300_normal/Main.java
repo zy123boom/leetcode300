@@ -4268,6 +4268,7 @@ public class Main {
      * @return
      */
     int[][] directionForNumIslands = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
     public int numIslands(char[][] grid) {
         /*
             DFS+递归，模板题目
@@ -4295,6 +4296,155 @@ public class Main {
         for (int[] d : directionForNumIslands) {
             numIslandsDFS(grid, row + d[0], col + d[1]);
         }
+    }
+
+    /**
+     * LeetCode.207 课程表
+     * <p>
+     * 你这个学期必须选修 numCourse 门课程，记为 0 到 numCourse-1 。
+     * 在选修某些课程之前需要一些先修课程。 例如，想要学习课程 0 ，你需要先完成课程 1 ，
+     * 我们用一个匹配来表示他们：[0,1]
+     * 给定课程总量以及它们的先决条件，请你判断是否可能完成所有课程的学习？
+     * <p>
+     * 示例 1:
+     * 输入: 2, [[1,0]]
+     * 输出: true
+     * 解释: 总共有 2 门课程。学习课程 1 之前，你需要完成课程 0。所以这是可能的。
+     * <p>
+     * 示例 2:
+     * 输入: 2, [[1,0],[0,1]]
+     * 输出: false
+     * 解释: 总共有 2 门课程。学习课程 1 之前，你需要先完成​课程 0；并且学习课程 0 之前，
+     * 你还应先完成课程 1。这是不可能的。
+     *
+     * @param numCourses
+     * @param prerequisites
+     * @return
+     */
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        /*
+            本题考查图论，采用BFS。首先记录每个入度为0的先修课放入队列中，然后取出，让后修课
+            的入度-1，当入度为0时放入队列中。不断重复上述步骤。当队列为空时，检查是否所有的课
+            入度都是0，如果不是则返回false。
+            具体解题步骤：
+            1.构建HashMap，key为课的序号，Value为List，即该课的后续课。
+            2.然后构建一个数组inDegree[n]用来存每个课的入度。以课的序号的下标存储。
+            3.BFS。将入度为0的课（先导课）放入队列中，然后取队头，如果当前课有后续课，则将后续课入度-1，
+            在inDegree中减1。
+            4.检查入度数组，看每个值是不是都是0，如果都是0就返回true，否则返回false.
+         */
+        int[] inDegree = new int[numCourses];
+        if (prerequisites == null || prerequisites.length == 0) {
+            return true;
+        }
+        Map<Integer, List<Integer>> graph = new HashMap<>();
+        for (int i = 0; i < prerequisites.length; i++) {
+            inDegree[prerequisites[i][0]]++;
+            if (graph.containsKey(prerequisites[i][1])) {
+                graph.get(prerequisites[i][1]).add(prerequisites[i][0]);
+            } else {
+                List<Integer> list = new ArrayList<>();
+                list.add(prerequisites[i][0]);
+                graph.put(prerequisites[i][1], list);
+            }
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        // 3.
+        for (int i = 0; i < numCourses; i++) {
+            if (inDegree[i] == 0) {
+                queue.offer(i);
+            }
+        }
+        while (!queue.isEmpty()) {
+            int course = queue.poll();
+            // 当前课的后续课
+            List<Integer> subCourses = graph.get(course);
+            for (int i = 0; subCourses != null && i < subCourses.size(); i++) {
+                if (--inDegree[subCourses.get(i)] == 0) {
+                    queue.offer(subCourses.get(i));
+                }
+            }
+        }
+        // 4.
+        for (int i = 0; i < inDegree.length; i++) {
+            if (inDegree[i] != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * LeetCode.210 课程表II
+     * <p>
+     * 现在你总共有 n 门课需要选，记为 0 到 n-1。
+     * 在选修某些课程之前需要一些先修课程。 例如，想要学习课程 0 ，你需要先完成课程 1 ，我们用一个
+     * 匹配来表示他们: [0,1]
+     * 给定课程总量以及它们的先决条件，返回你为了学完所有课程所安排的学习顺序。
+     * 可能会有多个正确的顺序，你只要返回一种就可以了。如果不可能完成所有课程，返回一个空数组。
+     * <p>
+     * 示例 1:
+     * 输入: 2, [[1,0]]
+     * 输出: [0,1]
+     * 解释: 总共有 2 门课程。要学习课程 1，你需要先完成课程 0。因此，正确的课程顺序为 [0,1] 。
+     * <p>
+     * 示例 2:
+     * 输入: 4, [[1,0],[2,0],[3,1],[3,2]]
+     * 输出: [0,1,2,3] or [0,2,1,3]
+     * 解释: 总共有 4 门课程。要学习课程 3，你应该先完成课程 1 和课程 2。并且课程 1 和课程 2 都应该排
+     * 在课程 0 之后。因此，一个正确的课程顺序是 [0,1,2,3] 。另一个正确的排序是 [0,2,1,3] 。
+     *
+     * @param numCourses
+     * @param prerequisites
+     * @return
+     */
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        /*
+            思路同207题，不同的是对第三步BFS的优化，使用数组进行BFS，最后的结果也就是这个数组。
+            使用双指针，首先让入度为0的课进数组，然后后移快指针。然后看慢指针的值，减后续课的入度，当后续课
+            的入度为0时，后移快指针。每次看完慢指针的值以后慢指针后移。当快慢指针都==n时，则表示成功。
+            如果快慢指针在之前就相遇，则失败，返回空数组。
+         */
+        int[] inDegree = new int[numCourses];
+        int[] res = new int[numCourses];
+        if (numCourses <= 0 || prerequisites == null) {
+            return res;
+        }
+        Map<Integer, List<Integer>> graph = new HashMap<>();
+        for (int i = 0; i < prerequisites.length; i++) {
+            inDegree[prerequisites[i][0]]++;
+            if (graph.containsKey(prerequisites[i][1])) {
+                graph.get(prerequisites[i][1]).add(prerequisites[i][0]);
+            } else {
+                List<Integer> list = new ArrayList<>();
+                list.add(prerequisites[i][0]);
+                graph.put(prerequisites[i][1], list);
+            }
+        }
+        // BFS
+        int first = 0, last = 0;
+        for (int i = 0; i < numCourses; i++) {
+            if (inDegree[i] == 0) {
+                res[last++] = i;
+            }
+        }
+        while (first < last) {
+            // 后续课
+            List<Integer> subCourses = graph.get(res[first]);
+            if (subCourses != null) {
+                for (int i = 0; i < subCourses.size(); i++) {
+                    if (--inDegree[subCourses.get(i)] == 0) {
+                        res[last++] = subCourses.get(i);
+                    }
+                }
+            }
+            first++;
+        }
+
+        if (last != numCourses) {
+            return new int[0];
+        }
+        return res;
     }
 }
 
