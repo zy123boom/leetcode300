@@ -4375,6 +4375,102 @@ public class Main {
     }
 
     /**
+     * LeetCode.208 实现Trie(前缀树)
+     * <p>
+     * 实现一个 Trie (前缀树)，包含 insert, search, 和 startsWith 这三个操作。
+     * <p>
+     * 示例:
+     * Trie trie = new Trie();
+     * <p>
+     * trie.insert("apple");
+     * trie.search("apple");   // 返回 true
+     * trie.search("app");     // 返回 false
+     * trie.startsWith("app"); // 返回 true
+     * trie.insert("app");
+     * trie.search("app");     // 返回 true
+     * <p>
+     * 说明:
+     * 你可以假设所有的输入都是由小写字母 a-z 构成的。
+     * 保证所有输入均为非空字符串。
+     */
+    class Trie {
+        /*
+            children[0]存'a'，children[1]存'b'，以此类推。
+            所以存的时候用当前字符减去'a'就是相应的children下标。
+         */
+
+        class TrieNode {
+            TrieNode[] children;
+            boolean isEnd;
+
+            public TrieNode() {
+                children = new TrieNode[26];
+                isEnd = false;
+                // 节点初始化为null
+                for (int i = 0; i < 26; i++) {
+                    children[i] = null;
+                }
+            }
+        }
+
+        TrieNode root;
+
+        /**
+         * Initialize your data structure here.
+         */
+        public Trie() {
+            root = new TrieNode();
+        }
+
+        /**
+         * Inserts a word into the trie.
+         */
+        public void insert(String word) {
+            char[] strArr = word.toCharArray();
+            TrieNode cur = root;
+            for (int i = 0; i < strArr.length; i++) {
+                // 当前孩子是否为null
+                if (cur.children[strArr[i] - 'a'] == null) {
+                    cur.children[strArr[i] - 'a'] = new TrieNode();
+                }
+                cur = cur.children[strArr[i] - 'a'];
+            }
+            cur.isEnd = true;
+        }
+
+        /**
+         * Returns if the word is in the trie.
+         */
+        public boolean search(String word) {
+            char[] strArr = word.toCharArray();
+            TrieNode cur = root;
+            for (int i = 0; i < strArr.length; i++) {
+                // 当前孩子是否为null
+                if (cur.children[strArr[i] - 'a'] == null) {
+                    return false;
+                }
+                cur = cur.children[strArr[i] - 'a'];
+            }
+            return cur.isEnd;
+        }
+
+        /**
+         * Returns if there is any word in the trie that starts with the given prefix.
+         */
+        public boolean startsWith(String prefix) {
+            char[] strArr = prefix.toCharArray();
+            TrieNode cur = root;
+            for (int i = 0; i < strArr.length; i++) {
+                if (cur.children[strArr[i] - 'a'] == null) {
+                    return false;
+                }
+                cur = cur.children[strArr[i] - 'a'];
+            }
+            return true;
+        }
+    }
+
+    /**
      * LeetCode.210 课程表II
      * <p>
      * 现在你总共有 n 门课需要选，记为 0 到 n-1。
