@@ -4471,6 +4471,51 @@ public class Main {
     }
 
     /**
+     * LeetCode.209 长度最小的子数组
+     * <p>
+     * 给定一个含有 n 个正整数的数组和一个正整数 s ，找出该数组中满足其和 ≥ s 的长度最小的连续子数组。
+     * 如果不存在符合条件的连续子数组，返回 0。
+     * <p>
+     * 示例: 
+     * 输入: s = 7, nums = [2,3,1,2,4,3]
+     * 输出: 2
+     * 解释: 子数组 [4,3] 是该条件下的长度最小的连续子数组。。
+     *
+     * @param s
+     * @param nums
+     * @return
+     */
+    public int minSubArrayLen(int s, int[] nums) {
+        /*
+            双指针。
+            1.用双指针 left 和 right 表示一个窗口。
+            right 向右移增大窗口，直到窗口内的数字和大于等于了s。进行第2步。
+            2.记录此时的长度，left 向右移动，开始减少长度，每减少一次，就更新最小长度。
+            直到当前窗口内的数字和小于了s，回到第1步。
+         */
+        int n = nums.length;
+        if (n == 0) {
+            return 0;
+        }
+        int sum = 0;
+        int left = 0, right = 0;
+        // 窗口长度
+        int minLen = Integer.MAX_VALUE;
+        while (right < n) {
+            sum += nums[right];
+            right++;
+            while (sum >= s) {
+                // 走左指针
+                minLen = Math.min(minLen, right - left);
+                sum -= nums[left];
+                left++;
+            }
+        }
+
+        return minLen == Integer.MAX_VALUE ? 0 : minLen;
+    }
+
+    /**
      * LeetCode.210 课程表II
      * <p>
      * 现在你总共有 n 门课需要选，记为 0 到 n-1。
