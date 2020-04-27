@@ -4587,6 +4587,74 @@ public class Main {
         }
         return res;
     }
+
+    /**
+     * LeetCode.213 打家劫舍II
+     * <p>
+     * 你是一个专业的小偷，计划偷窃沿街的房屋，每间房内都藏有一定的现金。这个地方所有的房屋都围成一圈，
+     * 这意味着第一个房屋和最后一个房屋是紧挨着的。同时，相邻的房屋装有相互连通的防盗系统，如果两间相
+     * 邻的房屋在同一晚上被小偷闯入，系统会自动报警。
+     * 给定一个代表每个房屋存放金额的非负整数数组，计算你在不触动警报装置的情况下，能够偷窃到的最高金额。
+     * <p>
+     * 示例 1:
+     * 输入: [2,3,2]
+     * 输出: 3
+     * 解释: 你不能先偷窃 1 号房屋（金额 = 2），然后偷窃 3 号房屋（金额 = 2）, 因为他们是相邻的。
+     * <p>
+     * 示例 2:
+     * 输入: [1,2,3,1]
+     * 输出: 4
+     * 解释: 你可以先偷窃 1 号房屋（金额 = 1），然后偷窃 3 号房屋（金额 = 3）。
+     *      偷窃到的最高金额 = 1 + 3 = 4 。
+     *
+     * @param nums
+     * @return
+     */
+    public int rob(int[] nums) {
+        /*
+            动态规划，类似打家劫舍I。
+            在I中，有两个数组偷和不偷。在这个题上，加上两个条件，偷当前&&偷第一个、不偷当前&&偷第一个、
+            不偷当前&&偷第一个。不偷当前&&不偷第一个。四个数组，两两一组。
+            rob_rowFirst、rob_notRowFirst、nr_rf、nr_nrf。
+            分析方法同I。
+
+            转移方程：
+            rob_rf[i] = nRob_rf[i - 1] + nums[i]
+            nRob_rf[i] = Math.max(rob_rf[i - 1], nRob_rf[i - 1])
+
+            rob_nrf[i] = nRob_nrf[i - 1] + nums[i]
+            nRob_nrf[i] = Math.max(rob_nrf[i - 1], nRob_nrf[i - 1])
+
+            最后分析有效结果。
+            1.偷当前&&偷第一个的情况，偷到最后的时候绕了一圈，由于第一个房屋和最后一个房屋是紧挨着的，
+            不能偷，所以该情况是失效的。
+            2.不偷当前&&偷第一个，结束的时候最后未偷，可以满足题意，有效。
+            3.后两种情况，由于第一个没有偷，最后一个可以偷也可以不偷，所以后两种都有效。
+            所以，最后的答案是在上面三个情况中选最大值。
+         */
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int n = nums.length;
+        if (n == 1) {
+            return nums[0];
+        }
+
+        int[] rob_rf = new int[n];
+        int[] nRob_rf = new int[n];
+        int[] rob_nrf = new int[n];
+        int[] nRob_nrf = new int[n];
+        rob_rf[0] = nums[0];
+
+        for (int i = 1; i < nums.length; i++) {
+            rob_rf[i] = nRob_rf[i - 1] + nums[i];
+            nRob_rf[i] = Math.max(rob_rf[i - 1], nRob_rf[i - 1]);
+            rob_nrf[i] = nRob_nrf[i - 1] + nums[i];
+            nRob_nrf[i] = Math.max(rob_nrf[i - 1], nRob_nrf[i - 1]);
+        }
+
+        return Math.max(nRob_rf[n - 1], Math.max(rob_nrf[n - 1], nRob_nrf[n - 1]));
+    }
 }
 
 class TreeNode {

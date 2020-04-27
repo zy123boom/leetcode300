@@ -989,16 +989,28 @@ public class Main {
      * @return
      */
     public int rob(int[] nums) {
-        if (nums.length < 2) {
-            return nums.length == 0 ? 0 : nums[0];
+        /*
+            动态规划，设置两个数组，偷或者不偷。
+            ①state: rob[nums.length], notRob[nums.length]， 表示当前位置偷还是不偷
+            ②init: rob[0] = 0, notRob[0] = 0
+            ③转移方程：
+            1.如果当前位置i要偷，那上一个位置（i - 1）不能偷，取不偷的加上当前的。
+            即rob[i] = notRob[i - 1] + nums[i]
+            2.如果当前位置i不偷，就跳过这个位置，则取上个位置（i - 1）中的最大值。
+            即notRob[i] = Math.max(rob[i - 1], notRob[i - 1])
+            ④result: res = Math.max(rob[nums.length - 1], notRob[nums.length - 1])
+
+            由于当前位置i只和i-1有关系，所以可以进行空间上的优化，如下代码所示。
+         */
+        int rob = 0;
+        int notRob = 0;
+        for (int num : nums) {
+            // 上一波的最后状态，对应不偷的值。
+            int pre = Math.max(rob, notRob);
+            rob = notRob + num;
+            notRob = pre;
         }
-        int[] dp = new int[nums.length];
-        dp[0] = nums[0];
-        dp[1] = nums[0] > nums[1] ? nums[0] : nums[1];
-        for (int i = 2; i < nums.length; i++) {
-            dp[i] = Math.max(dp[i - 2] + nums[i], dp[i - 1]);
-        }
-        return dp[nums.length - 1];
+        return Math.max(rob, notRob);
     }
 
     /**
