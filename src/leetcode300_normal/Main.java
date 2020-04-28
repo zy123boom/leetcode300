@@ -4655,6 +4655,110 @@ public class Main {
 
         return Math.max(nRob_rf[n - 1], Math.max(rob_nrf[n - 1], nRob_nrf[n - 1]));
     }
+
+    /**
+     * LeetCode.216 组合总和III
+     * <p>
+     * 找出所有相加之和为 n 的 k 个数的组合。组合中只允许含有 1 - 9 的正整数，并且每种组合
+     * 中不存在重复的数字。
+     * <p>
+     * 说明：
+     * 所有数字都是正整数。
+     * 解集不能包含重复的组合。 
+     * <p>
+     * 示例 1:
+     * 输入: k = 3, n = 7
+     * 输出: [[1,2,4]]
+     * <p>
+     * 示例 2:
+     * 输入: k = 3, n = 9
+     * 输出: [[1,2,6], [1,3,5], [2,3,4]]
+     *
+     * @param k
+     * @param n
+     * @return
+     */
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (k == 0 || n == 0) {
+            return res;
+        }
+        dfs(res, new ArrayList<>(), 1, k, n);
+        return res;
+    }
+
+    private void dfs(List<List<Integer>> res, List<Integer> curr, int index, int k, int n) {
+        if (n == 0 && k == 0) {
+            res.add(new ArrayList<>(curr));
+            return;
+        } else if (n > 0 && k > 0) {
+            for (int i = index; i <= 9; i++) {
+                curr.add(i);
+                dfs(res, curr, i + 1, k - 1, n - i);
+                curr.remove(curr.size() - 1);
+            }
+        }
+    }
+
+    /**
+     * LeetCode.221 最大正方形
+     * <p>
+     * 在一个由 0 和 1 组成的二维矩阵内，找到只包含 1 的最大正方形，并返回其面积。
+     * <p>
+     * 示例:
+     * 输入:
+     * 1 0 1 0 0
+     * 1 0 1 1 1
+     * 1 1 1 1 1
+     * 1 0 0 1 0
+     * 输出: 4
+     *
+     * @param matrix
+     * @return
+     */
+    public int maximalSquare(char[][] matrix) {
+        /*
+            动态规划。最大的正方形就是由右下角的数字开始往左上角扩散，看形成的面积是多少。
+            ①state: dp[i][j]：到(i, j)位置时，由1组成的最大正方形的边长。
+            ②init: 长或宽某个为0，且该位置的值是'1'时，dp[i][j] = 1.
+            ③func: 由于是由右下角往左上角依次扩散。所以要比对的值是左边，上边和左上角。如果当前位置为'1'，
+            则：
+                dp[i][j] = min{dp[i-1][j], dp[i][j-1], dp[i-1][j-1]} + 1
+                最大边长：maxLen = max{maxLen, dp[i][j]}
+            ④result:  maxLen * maxLen
+         */
+        int m = matrix.length;
+        int n = matrix.length > 0 ? matrix[0].length : 0;
+        int[][] dp = new int[m][n];
+        // 最大边长
+        int maxLen = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == '1') {
+                    if (i == 0 || j == 0) {
+                        dp[i][j] = 1;
+                    } else {
+                        dp[i][j] = Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]) + 1;
+                    }
+                    maxLen = Math.max(maxLen, dp[i][j]);
+                }
+            }
+        }
+        return maxLen * maxLen;
+    }
+
+    public static void main(String[] args) {
+        Main main = new Main();
+        char[][] arr =
+                {
+                        {'1', '0', '1', '0', '0'},
+                        {'1', '0', '1', '1', '1'},
+                        {'1', '1', '1', '1', '1'},
+                        {'1', '0', '0', '1', '0'}
+                };
+        char[][] arr2 = {};
+        System.out.println(main.maximalSquare(arr2));
+    }
 }
 
 class TreeNode {
