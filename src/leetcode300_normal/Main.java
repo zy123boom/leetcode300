@@ -4746,19 +4746,6 @@ public class Main {
         }
         return maxLen * maxLen;
     }
-
-    public static void main(String[] args) {
-        Main main = new Main();
-        char[][] arr =
-                {
-                        {'1', '0', '1', '0', '0'},
-                        {'1', '0', '1', '1', '1'},
-                        {'1', '1', '1', '1', '1'},
-                        {'1', '0', '0', '1', '0'}
-                };
-        char[][] arr2 = {};
-        System.out.println(main.maximalSquare(arr2));
-    }
 }
 
 class TreeNode {
