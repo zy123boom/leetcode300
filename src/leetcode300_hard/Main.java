@@ -3,6 +3,7 @@ package leetcode300_hard;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * LeetCode前300道，困难题
@@ -55,6 +56,100 @@ public class Main {
             }
         }
         return match[s.length()][p.length()];
+    }
+
+    /**
+     * LeetCode.25 K个一组翻转链表
+     * <p>
+     * 给你一个链表，每 k 个节点一组进行翻转，请你返回翻转后的链表。
+     * k 是一个正整数，它的值小于或等于链表的长度。
+     * 如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。
+     * <p>
+     * 示例：
+     * 给你这个链表：1->2->3->4->5
+     * 当 k = 2 时，应当返回: 2->1->4->3->5
+     * 当 k = 3 时，应当返回: 3->2->1->4->5
+     * <p>
+     * 说明：
+     * 你的算法只能使用常数的额外空间。
+     * 你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode reverseKGroup(ListNode head, int k) {
+        /*
+            方法一：使用栈，将每k个元素放入栈，然后弹出就是反向的。当走到最后元素为null时栈的长度不足k，
+            说明不需要后面的入栈k个操作。该方法不满足的要求，时间复杂度O(N)。
+
+            首先设置一个dummy.next = head, curr指针指向dummy，next指针指向dummy.next即head。
+            然后入栈。然后判断是否需要后面入栈的要求，看是不是入了k个元素。然后不断的出栈，最后让curr.next=next
+            返回dummy.next.代码如下。
+
+            if (head == null) {
+                return null;
+            }
+            Stack<ListNode> stack = new Stack<>();
+            ListNode dummy = new ListNode(0);
+            dummy.next = head;
+            ListNode curr = dummy;
+            ListNode next = dummy.next;
+            while (next != null) {
+                for (int i = 0; i < k && next != null; i++) {
+                    stack.push(next);
+                    next = next.next;
+                }
+                if (stack.size() != k) {
+                    return dummy.next;
+                }
+                while (!stack.isEmpty()) {
+                    curr.next = stack.pop();
+                    curr = curr.next;
+                }
+                curr.next = next;
+            }
+            return dummy.next;
+
+            方法二：两个指针，一个prev指向dummy，一个last在后面，要翻转的是prev和last之间的链表
+         */
+        if (head == null) {
+            return null;
+        }
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode prev = dummy;
+        while (prev != null) {
+            prev = reverse(prev, k);
+        }
+        return dummy.next;
+    }
+
+    /**
+     * 25题帮助函数
+     *
+     * @param prev
+     * @param k
+     * @return
+     */
+    private ListNode reverse(ListNode prev, int k) {
+        ListNode last = prev;
+        for (int i = 0; i < k + 1; i++) {
+            last = last.next;
+            if (i != k && last == null) {
+                return null;
+            }
+        }
+        ListNode tail = prev.next;
+        ListNode curr = prev.next.next;
+        while (curr != last) {
+            ListNode next = curr.next;
+            curr.next = prev.next;
+            prev.next = curr;
+            tail.next = next;
+            curr = next;
+        }
+        return tail;
     }
 
     /**
@@ -197,7 +292,7 @@ public class Main {
         }
 
         // 2.判断左上到右下的对角线，当前行列的左上角坐标是(row - 1, col - 1)
-        for (int i = rowIndex - 1,  j = colIndex - 1; i >= 0 && j >= 0; i--, j--) {
+        for (int i = rowIndex - 1, j = colIndex - 1; i >= 0 && j >= 0; i--, j--) {
             if (board[i][j] == 'Q') {
                 return false;
             }
@@ -230,5 +325,24 @@ public class Main {
             res.add(sb.toString());
         }
         return res;
+    }
+}
+
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+
+    public TreeNode(int val) {
+        this.val = val;
+    }
+}
+
+class ListNode {
+    int val;
+    ListNode next;
+
+    public ListNode(int val) {
+        this.val = val;
     }
 }
