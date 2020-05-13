@@ -58,6 +58,61 @@ public class Main {
     }
 
     /**
+     * LeetCode.42 接雨水
+     *
+     * @param height
+     * @return
+     */
+    public int trap(int[] height) {
+        /*
+            方法一：找出左右两边最高的值，相当于墙。要得到雨水的量，取两堵墙中较矮的然后减去当前位置的高度
+            就是当前位置可以存下的水，全部的加起来就是结果。空间复杂度O(N)
+
+            代码如下：
+            if (height == null || height.length == 0) {
+                return 0;
+            }
+            int n = height.length;
+            int res = 0;
+            int[] left = new int[n];
+            int[] right = new int[n];
+            left[0] = height[0];
+            for (int i = 1; i < n; i++) {
+                left[i] = Math.max(left[i - 1], height[i]);
+            }
+            right[n - 1] = height[n - 1];
+            for (int i = n - 2; i >= 0; i--) {
+                right[i] = Math.max(right[i + 1], height[i]);
+            }
+            for (int i = 0; i < n; i++) {
+                res += Math.min(left[i], right[i]) - height[i];
+            }
+            return res;
+
+            方法二：双指针，此处是方法二的代码
+         */
+        if (height == null || height.length == 0) {
+            return 0;
+        }
+        int res = 0;
+        int leftMax = 0;
+        int rightMax = 0;
+        int i = 0, j = height.length - 1;
+        while (i < j) {
+            leftMax = Math.max(leftMax, height[i]);
+            rightMax = Math.max(rightMax, height[i]);
+            if (leftMax < rightMax) {
+                res += leftMax - height[i];
+                i++;
+            } else {
+                res += rightMax - height[j];
+                j--;
+            }
+        }
+        return res;
+    }
+
+    /**
      * LeetCode.51 N皇后
      * n 皇后问题研究的是如何将 n 个皇后放置在 n×n 的棋盘上，并且使皇后彼此之间不能相互攻击。
      * 给定一个整数 n，返回所有不同的 n 皇后问题的解决方案。
