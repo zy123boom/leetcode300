@@ -208,6 +208,51 @@ public class Main {
     }
 
     /**
+     * LeetCode.45 跳跃游戏II
+     * <p>
+     * 给定一个非负整数数组，你最初位于数组的第一个位置。
+     * 数组中的每个元素代表你在该位置可以跳跃的最大长度。
+     * 你的目标是使用最少的跳跃次数到达数组的最后一个位置。
+     * <p>
+     * 示例:
+     * 输入: [2,3,1,1,4]
+     * 输出: 2
+     * 解释: 跳到最后一个位置的最小跳跃数是 2。
+     * 从下标为 0 跳到下标为 1 的位置，跳 1 步，然后跳 3 步到达数组的最后一个位置。
+     * <p>
+     * 说明:
+     * 假设你总是可以到达数组的最后一个位置。
+     *
+     * @param nums
+     * @return
+     */
+    public int jump(int[] nums) {
+        /*
+            记录三个变量。
+            step为步数，最终的结果。
+            currMax为当前情况下最大能走到的值，是新的可以走到的最大值
+            nextMax为当前情况下能走到的最大的地方。每一轮结束该值赋给currMax.
+         */
+        if (nums == null || nums.length <= 1) {
+            return 0;
+        }
+        int step = 0, currMax = 0, nextMax = 0;
+        int index = 0;
+        while (index <= currMax) {
+            while (index <= currMax) {
+                nextMax = Math.max(nextMax, nums[index] + index);
+                index++;
+            }
+            currMax = nextMax;
+            step++;
+            if (currMax >= nums.length - 1) {
+                return step;
+            }
+        }
+        return 0;
+    }
+
+    /**
      * LeetCode.51 N皇后
      * n 皇后问题研究的是如何将 n 个皇后放置在 n×n 的棋盘上，并且使皇后彼此之间不能相互攻击。
      * 给定一个整数 n，返回所有不同的 n 皇后问题的解决方案。
