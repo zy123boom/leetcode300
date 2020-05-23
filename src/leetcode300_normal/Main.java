@@ -138,7 +138,7 @@ public class Main {
     public String longestPalindrome(String s) {
         /*
             从中间开始，向两边看，如果两边一样继续扩散。如果一端到头，得出结果。
-            奇数时看字符串，偶数时看两个字符的中间
+            奇数时看两个字符的中间字符，偶数时看两个字符的中间
          */
         if (s.length() == 0) {
             return s;
@@ -4011,7 +4011,7 @@ public class Main {
             所以此处需要三个值，maxToCurr, minToCurr, max。
             maxToCurr = max of {maxToCurr * num, minToCurr * num, num}
             minToCurr = min of {maxToCurr * num, minToCurr * num, num}
-            max = max{maxToCurr, product}
+            max = max{maxToCurr, max}
          */
         if (nums == null || nums.length == 0) {
             return 0;

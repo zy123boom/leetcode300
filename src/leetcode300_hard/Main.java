@@ -371,6 +371,112 @@ public class Main {
         }
         return res;
     }
+
+    /**
+     * LeetCode.76 最小覆盖子串
+     * <p>
+     * 给你一个字符串 S、一个字符串 T，请在字符串 S 里面找出：包含 T 所有字符的最小子串。
+     * <p>
+     * 示例：
+     * 输入: S = "ADOBECODEBANC", T = "ABC"
+     * 输出: "BANC"
+     * <p>
+     * 说明：
+     * 如果 S 中不存这样的子串，则返回空字符串 ""。
+     * 如果 S 中存在这样的子串，我们保证它是唯一的答案。
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public String minWindow(String s, String t) {
+        /*
+            由题意可知，最终的结果的起始字符肯定是t中的某个字符，结束字符肯定
+            也是t中的某个字符。
+            1.先统计t中的每个字符出现的次数，采用HashMap或256长度的数组。
+            同时生成一个对应的数组用来与数组对应，每个值初始都是0。
+            2.从左向右遍历s，找到第一个t中含有的字符，然后从此处开始搜索，记录指针为left
+            表示字串最左边的边界。再记录指针right。
+            3.当找到一个字符时，给对应的频率数组下标值加1，然后向右移动right指针，移动到
+            下一个包含t中字符的位置。然后此时再记录上一个找到的下标的值count，例如找到第一个
+            字符，count就是1，又找到了count为2，以此类推，当count == t.length()时，表示
+            所有的字符都找到了，则表示当前的子串是一个可能的解。
+            注意！当某个字符出现的次数对应的数组下标值跟t中的数组一样时，表示够了，如果还有该
+            字符则count不再增加。
+            4.当找到一个可能的解时，移动左指针，移动到下一个t中包含的字符的位置。然后要删掉left之前
+            指向的字符，然后减去s对应数组的下标值。此时注意，如果减去之前s对应数组的下标值大于t对应
+            数组的下标值，则此时新的left到right仍然是一个有效解。count不变。否则count减少。如果
+            此时count < t.length()则不是一个有效的值，则移动right指针到下一个t中出现的字符，然后重复
+            上述过程。
+            5.当right到s末尾时，得出答案。
+         */
+        if (s == null || t == null || s.length() == 0 || t.length() == 0) {
+            return "";
+        }
+        // count
+        int matchCount = 0;
+        String res = "";
+        // t对应的数组
+        int[] tArr = new int[256];
+        for (char c : t.toCharArray()) {
+            tArr[c]++;
+        }
+
+        // s对应的数组
+        int[] sArr = new int[256];
+        int left = findNextStrIdx(0, s, tArr);
+        if (left == s.length()) {
+            return "";
+        }
+        // 初始化right指针，跟left一个位置
+        int right = left;
+
+        // 步骤5的条件约束
+        while (right < s.length()) {
+            // 步骤3
+            char rightChar = s.charAt(right);
+            if (sArr[rightChar] < tArr[rightChar]) {
+                matchCount++;
+            }
+            sArr[rightChar]++;
+            // 步骤3最后部分寻找最优解的说明
+            while (left < s.length() && matchCount == t.length()) {
+                // 要替换的情况：当res为空或者当前res的长度大于新的长度
+                if (res.isEmpty() || res.length() > right - left + 1) {
+                    res = s.substring(left, right + 1);
+                }
+                // 步骤4
+                int leftChar = s.charAt(left);
+                if (sArr[leftChar] <= tArr[leftChar]) {
+                    matchCount--;
+                }
+                sArr[leftChar]--;
+                left = findNextStrIdx(left + 1, s, tArr);
+            }
+            right = findNextStrIdx(right + 1, s, tArr);
+        }
+        return res;
+    }
+
+    /**
+     * 76题帮助函数
+     * 找到s中下一个包含t中字符的位置
+     *
+     * @param start
+     * @param s
+     * @param tArr
+     * @return
+     */
+    private int findNextStrIdx(int start, String s, int[] tArr) {
+        while (start < s.length()) {
+            char c = s.charAt(start);
+            if (tArr[c] != 0) {
+                return start;
+            }
+            start++;
+        }
+        return start;
+    }
 }
 
 class TreeNode {
