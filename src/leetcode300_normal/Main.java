@@ -4749,6 +4749,49 @@ public class Main {
         }
         return maxLen * maxLen;
     }
+
+    /**
+     * LeetCode.287 寻找重复数
+     * <p>
+     * 给定一个包含 n + 1 个整数的数组 nums，其数字都在 1 到 n 之间（包括 1 和 n），
+     * 可知至少存在一个重复的整数。假设只有一个重复的整数，找出这个重复的数。
+     * <p>
+     * 示例 1:
+     * 输入: [1,3,4,2,2]
+     * 输出: 2
+     * <p>
+     * 示例 2:
+     * 输入: [3,1,3,4,2]
+     * 输出: 3
+     * <p>
+     * 说明：
+     * 不能更改原数组（假设数组是只读的）。
+     * 只能使用额外的 O(1) 的空间。
+     * 时间复杂度小于 O(n2) 。
+     * 数组中只有一个重复的数字，但它可能不止重复出现一次。
+     *
+     * @param nums
+     * @return
+     */
+    public int findDuplicate(int[] nums) {
+        /*
+                使用判定链表有环的快慢指针法。我们先设置慢指针slow和快
+            指针fast，慢指针每次走一步，快指针每次走两步，两个指针在
+            有环的情况下一定会相遇，此时我们再将slow 放置起点0，两个
+            指针每次同时移动一步，相遇的点就是答案。
+         */
+        int slow = 0, fast = 0;
+        do {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        } while (slow != fast);
+        slow = 0;
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+        return slow;
+    }
 }
 
 class TreeNode {

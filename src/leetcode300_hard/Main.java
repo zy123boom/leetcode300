@@ -446,7 +446,7 @@ public class Main {
                     res = s.substring(left, right + 1);
                 }
                 // 步骤4
-                int leftChar = s.charAt(left);
+                char leftChar = s.charAt(left);
                 if (sArr[leftChar] <= tArr[leftChar]) {
                     matchCount--;
                 }
