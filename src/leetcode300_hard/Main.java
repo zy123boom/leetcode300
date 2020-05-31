@@ -480,10 +480,10 @@ public class Main {
 
     /**
      * LeetCode.84 柱状图中最大的矩形
-     *
+     * <p>
      * 给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1。
      * 求在该柱状图中，能够勾勒出来的矩形的最大面积。
-     *
+     * <p>
      * 示例:
      * 输入: [2,1,5,6,2,3]
      * 输出: 10
@@ -519,6 +519,79 @@ public class Main {
             }
         }
         return max;
+    }
+
+    /**
+     * LeetCode.72 编辑距离
+     * <p>
+     * 给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数。
+     * 你可以对一个单词进行如下三种操作：
+     * 插入一个字符
+     * 删除一个字符
+     * 替换一个字符
+     *  
+     * 示例 1：
+     * 输入：word1 = "horse", word2 = "ros"
+     * 输出：3
+     * 解释：
+     * horse -> rorse (将 'h' 替换为 'r')
+     * rorse -> rose (删除 'r')
+     * rose -> ros (删除 'e')
+     * <p>
+     * 示例 2：
+     * 输入：word1 = "intention", word2 = "execution"
+     * 输出：5
+     * 解释：
+     * intention -> inention (删除 't')
+     * inention -> enention (将 'i' 替换为 'e')
+     * enention -> exention (将 'n' 替换为 'x')
+     * exention -> exection (将 'n' 替换为 'c')
+     * exection -> execution (插入 'u')
+     *
+     * @param word1
+     * @param word2
+     * @return
+     */
+    public int minDistance(String word1, String word2) {
+        /*
+            两个字符串匹配的一类题目，通常使用动态规划。
+            1.state: dp[i][j]: 在word1中取前i个字符，在word2中取前j个字符，要使两个匹配，
+            最少需要的步数是多少(i和j从0开始，所以数组长度长宽都加1)
+            2.init: 当i或j某一个为0，另外一个可以通过增删改若干次使得两个匹配，步数就是当
+            前位置的下标。
+            3.func：
+            ①当word1[i] == word2[j]，例如"12b"和"ab"
+            第一种匹配："12b"和"a"，需要加上1，因为第二个字符串要去掉'b'才能从"ab"变成"b"
+            第二种匹配："12"和"ab"，需要加上1，因为"12"里少个'b'
+            第三种匹配：'12'和'a'，都加个'b'就行，不用额外加1
+            上述三种匹配是之前的三个方向的状态量，所以dp[i][j] = min{dp[i-1][j-1], dp[i-1][j]+1, dp[i][j-1]+1}
+            ②当word1[i] != word2[j]，①中的第三种匹配情况也要加1.
+            dp[i][j] = min{dp[i-1][j-1]+1, dp[i-1][j]+1, dp[i][j-1]+1}
+            4.result: 右下角的值，dp[m][n]
+         */
+        int m = word1.length();
+        int n = word2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 0; i <= m; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 0; j <= n; j++) {
+            dp[0][j] = j;
+        }
+
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                // 后面要取最小，先设置成最大值
+                dp[i][j] = Integer.MAX_VALUE;
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1], dp[i - 1][j] + 1), dp[i][j - 1] + 1);
+                } else {
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1] + 1, dp[i - 1][j] + 1), dp[i][j - 1] + 1);
+                }
+            }
+        }
+
+        return dp[m][n];
     }
 }
 
