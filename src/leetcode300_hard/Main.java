@@ -479,49 +479,6 @@ public class Main {
     }
 
     /**
-     * LeetCode.84 柱状图中最大的矩形
-     * <p>
-     * 给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1。
-     * 求在该柱状图中，能够勾勒出来的矩形的最大面积。
-     * <p>
-     * 示例:
-     * 输入: [2,1,5,6,2,3]
-     * 输出: 10
-     *
-     * @param heights
-     * @return
-     */
-    public int largestRectangleArea(int[] heights) {
-        /*
-             找到某个特定位置，看该位置之前所能组成的最大面积。
-             过程：
-             判断该位置跟下一个位置的高低关系，如果低于下一个，则移动指针到下一个，再继续下一次判断。
-             如果高于下一个，说明以当前位置为最右边界，则以该位置为右边界所围成的面积可能是最大。
-             则以该位置开始向左遍历来计算面积。面积是高度（遍历当前位置及之前的位置高度）
-             * 宽度（遍历的值）
-             然后取最大。
-             计算结束后继续向右移，开始下一次计算。
-             时间复杂度O(N²)
-         */
-        if (heights == null || heights.length == 0) {
-            return 0;
-        }
-        int max = 0;
-        for (int curr = 0; curr < heights.length; curr++) {
-            // 当curr到最后或者前面的值比后面的值大，进行面积计算
-            if (curr == heights.length - 1 || heights[curr] > heights[curr + 1]) {
-                int minHeight = heights[curr];
-                // 往左遍历，计算面积
-                for (int idx = curr; idx >= 0; idx--) {
-                    minHeight = Math.min(minHeight, heights[idx]);
-                    max = Math.max(max, minHeight * (curr - idx + 1));
-                }
-            }
-        }
-        return max;
-    }
-
-    /**
      * LeetCode.72 编辑距离
      * <p>
      * 给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数。
@@ -592,6 +549,97 @@ public class Main {
         }
 
         return dp[m][n];
+    }
+
+    /**
+     * LeetCode.84 柱状图中最大的矩形
+     * <p>
+     * 给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1。
+     * 求在该柱状图中，能够勾勒出来的矩形的最大面积。
+     * <p>
+     * 示例:
+     * 输入: [2,1,5,6,2,3]
+     * 输出: 10
+     *
+     * @param heights
+     * @return
+     */
+    public int largestRectangleArea(int[] heights) {
+        /*
+             找到某个特定位置，看该位置之前所能组成的最大面积。
+             过程：
+             判断该位置跟下一个位置的高低关系，如果低于下一个，则移动指针到下一个，再继续下一次判断。
+             如果高于下一个，说明以当前位置为最右边界，则以该位置为右边界所围成的面积可能是最大。
+             则以该位置开始向左遍历来计算面积。面积是高度（遍历当前位置及之前的位置高度）
+             * 宽度（遍历的值）
+             然后取最大。
+             计算结束后继续向右移，开始下一次计算。
+             时间复杂度O(N²)
+         */
+        if (heights == null || heights.length == 0) {
+            return 0;
+        }
+        int max = 0;
+        for (int curr = 0; curr < heights.length; curr++) {
+            // 当curr到最后或者前面的值比后面的值大，进行面积计算
+            if (curr == heights.length - 1 || heights[curr] > heights[curr + 1]) {
+                int minHeight = heights[curr];
+                // 往左遍历，计算面积
+                for (int idx = curr; idx >= 0; idx--) {
+                    minHeight = Math.min(minHeight, heights[idx]);
+                    max = Math.max(max, minHeight * (curr - idx + 1));
+                }
+            }
+        }
+        return max;
+    }
+
+    /**
+     * LeetCode.85 最大矩形
+     * <p>
+     * 给定一个仅包含 0 和 1 的二维二进制矩阵，找出只包含 1 的最大矩形，并返回其面积。
+     * <p>
+     * 示例:
+     * 输入:
+     * [
+     * ["1","0","1","0","0"],
+     * ["1","0","1","1","1"],
+     * ["1","1","1","1","1"],
+     * ["1","0","0","1","0"]
+     * ]
+     * 输出: 6
+     *
+     * @param matrix
+     * @return
+     */
+    public int maximalRectangle(char[][] matrix) {
+        /*
+            以数组的每行，往上看。累加每列的值，绘制出一个高度的直方图。
+            所以该题转化成了84题 柱状图的最大矩形。不断的找最大的面积，就是答案
+
+            绘制直方图（某一行）：
+            如果当前下标的值是0，高度就是0。如果下标的值不是0，就加上之前对应位置
+            的值。
+         */
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return 0;
+        }
+        int row = matrix.length;
+        int col = matrix[0].length;
+        // 高度
+        int[] height = new int[col];
+        int res = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (matrix[i][j] == '1') {
+                    height[j]++;
+                } else {
+                    height[j] = 0;
+                }
+            }
+            res = Math.max(res, largestRectangleArea(height));
+        }
+        return res;
     }
 }
 
