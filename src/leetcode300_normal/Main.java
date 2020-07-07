@@ -830,10 +830,10 @@ public class Main {
                 }
             }
         }
-        if (nums[start] == start) {
+        if (nums[start] == target) {
             return start;
         }
-        if (nums[end] == end) {
+        if (nums[end] == target) {
             return end;
         }
         return -1;
