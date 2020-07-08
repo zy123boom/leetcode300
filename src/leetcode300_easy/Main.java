@@ -1340,6 +1340,55 @@ public class Main {
     }
 
     /**
+     * LeetCode.257 二叉树的所有路径
+     * <p>
+     * 给定一个二叉树，返回所有从根节点到叶子节点的路径。
+     * <p>
+     * 说明: 叶子节点是指没有子节点的节点。
+     * <p>
+     * 示例:
+     * 输入:
+     * 1
+     * /  \
+     * 2  3
+     * \
+     * 5
+     * 输出: ["1->2->5", "1->3"]
+     * 解释: 所有根节点到叶子节点的路径为: 1->2->5, 1->3
+     *
+     * @param root
+     * @return
+     */
+    // 1.递归的定义：求出root为根的所有root到left的path
+    public List<String> binaryTreePaths(TreeNode root) {
+        List<String> paths = new ArrayList<>();
+        // 3.递归出口
+        if (root == null) {
+            return paths;
+        }
+
+        // 特殊情况，只有一个根节点
+        if (root.left == null && root.right == null) {
+            paths.add("" + root.val);
+            return paths;
+        }
+
+        // 2.递归的拆解
+        List<String> leftPaths = binaryTreePaths(root.left);
+        List<String> rightPaths = binaryTreePaths(root.right);
+
+        // Divide & Merge
+        for(String path : leftPaths) {
+            paths.add(root.val + "->" + path);
+        }
+        for(String path : rightPaths) {
+            paths.add(root.val + "->" + path);
+        }
+
+        return paths;
+    }
+
+    /**
      * LeetCode.258 各位相加
      * 给定一个非负整数 num，反复将各个位上的数字相加，直到结果为一位数。
      *
