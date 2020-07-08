@@ -4751,6 +4751,52 @@ public class Main {
     }
 
     /**
+     * LeetCode.236 二叉树的最近公共祖先
+     *
+     * 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+     * 百度百科中最近公共祖先的定义为：“对于有根树 T 的两个结点 p、q，最近公共祖先
+     * 表示为一个结点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以
+     * 是它自己的祖先）。”
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        /*
+            分治思想
+            如果p和q都存在在root下面，return lca(p, q)
+            如果p和q只有一个在，返回在的那个
+            如果都不在，return null
+         */
+        if (root == null || root == p || root == q) {
+            return root;
+        }
+
+        // Divide
+        // 如果p和q都在左子树或者右子树，则其中另外一个会是null
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+
+        // 当p和q分别位于左子树和右子树，在两个子树中不会有最近公共祖先，所以祖先就是root
+        if (left != null && right != null) {
+            return root;
+        }
+
+        if (left != null) {
+            return left;
+        }
+
+        if (right != null) {
+            return right;
+        }
+
+        return null;
+
+    }
+
+    /**
      * LeetCode.287 寻找重复数
      * <p>
      * 给定一个包含 n + 1 个整数的数组 nums，其数字都在 1 到 n 之间（包括 1 和 n），
