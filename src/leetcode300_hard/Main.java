@@ -192,7 +192,7 @@ public class Main {
         int i = 0, j = height.length - 1;
         while (i < j) {
             leftMax = Math.max(leftMax, height[i]);
-            rightMax = Math.max(rightMax, height[i]);
+            rightMax = Math.max(rightMax, height[j]);
             if (leftMax < rightMax) {
                 res += leftMax - height[i];
                 i++;
