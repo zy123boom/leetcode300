@@ -3885,7 +3885,7 @@ public class Main {
         // 1.找到链表中点
         ListNode fast = dummy;
         ListNode slow = dummy;
-        while (fast != null && fast.next != null) {
+        while (fast != null && fast.next  != null) {
             fast = fast.next.next;
             slow = slow.next;
         }
