@@ -914,6 +914,57 @@ public class Main {
     }
 
     /**
+     * Leetcode 160.相交链表
+     * 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。
+     * 如果两个链表不存在相交节点，返回 null 。
+     *
+     * @param headA
+     * @param headB
+     * @return
+     */
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        // 遍历两个表，记录长度分别为len1, len2，最后节点分别为end1, end2，当
+        // 两个最后节点不相等则说明没有相交。若两个相等则说明相交。相交以后再从头遍历
+        // 此时假设len1=100, len2=80，此时遍历两个表，让head1先走100-80步，然后两个
+        // 一起走，相遇的节点就是入口节点
+        if (headA == null || headB == null) {
+            return null;
+        }
+
+        ListNode cur1 = headA;
+        ListNode cur2 = headB;
+
+        int n = 0; // 长度差
+        while (cur1.next != null) {
+            n++;
+            cur1 = cur1.next;
+        }
+
+        while (cur2.next != null) {
+            n--;
+            cur2 = cur2.next;
+        }
+
+        cur1 = n > 0 ? headA : headB;
+        cur2 = cur1 == headA ? headB : headA;
+
+        n = Math.abs(n);
+        // 长的先走n步
+        while (n != 0) {
+            n--;
+            cur1 = cur1.next;
+        }
+
+        while (cur1 != cur2) {
+            cur1 = cur1.next;
+            cur2 = cur2.next;
+        }
+
+        return cur1;
+
+    }
+
+    /**
      * LeetCode.168 Excel表列名称
      * <p>
      * 给定一个正整数，返回它在 Excel 表中相对应的列名称。
